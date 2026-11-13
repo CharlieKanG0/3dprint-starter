@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-44.20 -73.00 282.32 205.60" preserveAspectRatio="xMidYMid meet" style="width:100vw;height:100vh;display:block">
+<rect x="-44.20" y="-73.00" width="282.32" height="205.60" fill="#fff"/>
+<text x="-40.20" y="-65.40" font-size="5.60" font-weight="700" font-family="Helvetica, Arial, sans-serif" fill="#111">Telescope lock -- options A / B / C, section across the sleeve mouth</text>
+<rect x="-12.00" y="-17.00" width="24.00" height="34.00" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8"/>
+<rect x="-8.00" y="-13.00" width="16.00" height="26.00" rx="0.00" fill="#1e3a8a" fill-opacity="0.9" stroke="#1e3a8a" stroke-width="0.8"/>
+<rect x="-7.70" y="-12.70" width="15.40" height="25.40" rx="0.00" fill="#16a34a" fill-opacity="0.25" stroke="#16a34a" stroke-width="0.8"/>
+<text x="-30.00" y="-40.20" font-size="8.00" text-anchor="middle" font-weight="700" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="2.40" stroke-linejoin="round">A</text>
+<rect x="-11.00" y="-30.00" width="22.00" height="10.00" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8"/>
+<rect x="-2.00" y="-19.00" width="4.00" height="8.00" rx="0.00" fill="#dc2626" fill-opacity="0.9" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="-5.70" y="-12.70" width="11.40" height="2.00" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8"/>
+<text x="0.00" y="27.40" font-size="4.00" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="1.20" stroke-linejoin="round">thumb knob</text>
+<text x="0.00" y="36.40" font-size="4.00" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="1.20" stroke-linejoin="round">+ shoe</text>
+<rect x="78.00" y="-17.00" width="24.00" height="34.00" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8"/>
+<rect x="82.00" y="-13.00" width="16.00" height="26.00" rx="0.00" fill="#1e3a8a" fill-opacity="0.9" stroke="#1e3a8a" stroke-width="0.8"/>
+<rect x="82.30" y="-12.70" width="15.40" height="25.40" rx="0.00" fill="#16a34a" fill-opacity="0.25" stroke="#16a34a" stroke-width="0.8"/>
+<text x="60.00" y="-40.20" font-size="8.00" text-anchor="middle" font-weight="700" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="2.40" stroke-linejoin="round">B</text>
+<rect x="87.00" y="-17.00" width="6.00" height="4.00" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8" stroke-dasharray="6 4"/>
+<rect x="87.00" y="-12.70" width="6.00" height="3.00" rx="0.00" fill="#1e3a8a" fill-opacity="0.9" stroke="#1e3a8a" stroke-width="0.8"/>
+<text x="90.00" y="27.40" font-size="4.00" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="1.20" stroke-linejoin="round">flex tab clicks</text>
+<text x="90.00" y="36.40" font-size="4.00" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="1.20" stroke-linejoin="round">into notches</text>
+<rect x="168.00" y="-17.00" width="24.00" height="34.00" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8"/>
+<rect x="172.00" y="-13.00" width="16.00" height="26.00" rx="0.00" fill="#1e3a8a" fill-opacity="0.9" stroke="#1e3a8a" stroke-width="0.8"/>
+<rect x="172.30" y="-12.70" width="15.40" height="25.40" rx="0.00" fill="#16a34a" fill-opacity="0.25" stroke="#16a34a" stroke-width="0.8"/>
+<text x="150.00" y="-40.20" font-size="8.00" text-anchor="middle" font-weight="700" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="2.40" stroke-linejoin="round">C</text>
+<rect x="163.00" y="-22.00" width="34.00" height="44.00" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8" stroke-dasharray="6 4"/>
+<text x="180.00" y="27.40" font-size="4.00" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="1.20" stroke-linejoin="round">twist collar on</text>
+<text x="180.00" y="36.40" font-size="4.00" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="1.20" stroke-linejoin="round">a split mouth</text>
+<g stroke="#111" stroke-width="0.8" font-family="Helvetica, Arial, sans-serif" font-size="4.00" fill="#111"><line x1="189.00" y1="41.40" x2="205.00" y2="41.40"/><line x1="189.00" y1="41.40" x2="189.00" y2="25.40"/><text x="206.60" y="42.80" stroke="none">+Y</text><text x="186.60" y="23.40" stroke="none">+Z</text></g>
+<rect x="-40.20" y="55.00" width="6.40" height="4.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.6"/><text x="-31.40" y="58.40" font-size="4.00" font-family="Helvetica, Arial, sans-serif" fill="#111">printed part</text>
+<rect x="-40.20" y="61.80" width="6.40" height="4.00" fill="#1e3a8a" fill-opacity="0.9" stroke="#1e3a8a" stroke-width="0.6"/><text x="-31.40" y="65.20" font-size="4.00" font-family="Helvetica, Arial, sans-serif" fill="#111">hole / slot in printed part</text>
+<rect x="-40.20" y="68.60" width="6.40" height="4.00" fill="#16a34a" fill-opacity="0.25" stroke="#16a34a" stroke-width="0.6"/><text x="-31.40" y="72.00" font-size="4.00" font-family="Helvetica, Arial, sans-serif" fill="#111">item the part holds or carries</text>
+<rect x="-40.20" y="75.40" width="6.40" height="4.00" fill="#dc2626" fill-opacity="0.9" stroke="#dc2626" stroke-width="0.6"/><text x="-31.40" y="78.80" font-size="4.00" font-family="Helvetica, Arial, sans-serif" fill="#111">mating hardware (bolt, pin, nut)</text>
+<text x="-40.20" y="88.00" font-size="4.00" font-family="Helvetica, Arial, sans-serif" fill="#444">A thumb knob (stepless): M6 brass insert in the sleeve top, a printed thumb screw pushes a shoe onto the bar.</text>
+<text x="-40.20" y="94.40" font-size="4.00" font-family="Helvetica, Arial, sans-serif" fill="#444">  Any length, holds hard, one hand. Loosen, slide, tighten. Simplest and strongest.</text>
+<text x="-40.20" y="100.80" font-size="4.00" font-family="Helvetica, Arial, sans-serif" fill="#444">B click detent (stepped, every ~15 mm): a flexing tab in the sleeve wall drops into notches along the bar.</text>
+<text x="-40.20" y="107.20" font-size="4.00" font-family="Helvetica, Arial, sans-serif" fill="#444">  Pull/push to click, no knob -- same feel as the hinge. Holds less; a hard tug can click it in.</text>
+<text x="-40.20" y="113.60" font-size="4.00" font-family="Helvetica, Arial, sans-serif" fill="#444">C twist collar (tripod-leg style): threaded collar squeezes a slotted sleeve mouth. Stepless, but a</text>
+<text x="-40.20" y="120.00" font-size="4.00" font-family="Helvetica, Arial, sans-serif" fill="#444">  bulky printed thread at the arm tip, and the slotted mouth is the weakest place in ASA.</text>
+</svg>

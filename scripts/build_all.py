@@ -1,7 +1,7 @@
 """Rebuild every part and assembly headless and fail if any assertion breaks.
 
     ./venv/bin/python scripts/build_all.py            # all parts
-    ./venv/bin/python scripts/build_all.py shovel_mount shovel_on_rail
+    ./venv/bin/python scripts/build_all.py shower_mount
     ./venv/bin/python scripts/build_all.py --staged   # only what the commit touches
 
 A part is any parts/<name>/<name>.py, an assembly any assemblies/<name>/<name>.py

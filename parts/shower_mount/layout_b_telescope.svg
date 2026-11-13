@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-49.91 -98.04 457.82 355.62" preserveAspectRatio="xMidYMid meet" style="width:100vw;height:100vh;display:block">
+<rect x="-49.91" y="-98.04" width="457.82" height="355.62" fill="#fff"/>
+<text x="-42.27" y="-83.53" font-size="10.69" font-weight="700" font-family="Helvetica, Arial, sans-serif" fill="#111">Telescopic arm -- side view at 0 deg (retracted solid, extended dashed)</text>
+<circle cx="0.00" cy="0.00" r="27.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8"/>
+<text x="0.00" y="-34.33" font-size="7.64" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="2.29" stroke-linejoin="round">hinge hub</text>
+<rect x="0.00" y="-17.00" width="220.00" height="34.00" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8"/>
+<rect x="32.00" y="-13.00" width="188.00" height="26.00" rx="0.00" fill="#1e3a8a" fill-opacity="0.9" stroke="#1e3a8a" stroke-width="0.8"/>
+<rect x="32.00" y="-12.70" width="225.00" height="25.40" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8"/>
+<circle cx="257.00" cy="0.00" r="15.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8"/>
+<rect x="145.00" y="-12.70" width="225.00" height="25.40" rx="0.00" fill="#16a34a" fill-opacity="0.25" stroke="#16a34a" stroke-width="0.8" stroke-dasharray="6 4"/>
+<rect x="355.00" y="-15.00" width="30.00" height="30.00" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8" stroke-dasharray="6 4"/>
+<text x="126.00" y="29.67" font-size="7.64" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="2.29" stroke-linejoin="round">outer sleeve (prints with the hub)</text>
+<text x="297.50" y="29.67" font-size="7.64" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="2.29" stroke-linejoin="round">inner bar (prints with the tip joint)</text>
+<circle cx="205.00" cy="-23.00" r="6.00" fill="#dc2626" fill-opacity="0.9" stroke="#dc2626" stroke-width="0.8"/>
+<text x="205.00" y="-36.33" font-size="7.64" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="2.29" stroke-linejoin="round">lock</text>
+<g stroke="#111" stroke-width="0.7" fill="#111"><line x1="0.00" y1="60.00" x2="0.00" y2="55.42" fill="none"/><line x1="257.00" y1="60.00" x2="257.00" y2="55.42" fill="none"/><line x1="0.00" y1="60.00" x2="257.00" y2="60.00" fill="none"/><polygon points="0.00,60.00 6.87,62.06 6.87,57.94"/><polygon points="257.00,60.00 250.13,57.94 250.13,62.06"/></g>
+<text x="128.50" y="54.27" font-size="7.64" text-anchor="middle" font-weight="700" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="2.29" stroke-linejoin="round">257 retracted</text>
+<g stroke="#111" stroke-width="0.7" fill="#111"><line x1="0.00" y1="85.00" x2="0.00" y2="80.42" fill="none"/><line x1="370.00" y1="85.00" x2="370.00" y2="80.42" fill="none"/><line x1="0.00" y1="85.00" x2="370.00" y2="85.00" fill="none"/><polygon points="0.00,85.00 6.87,87.06 6.87,82.94"/><polygon points="370.00,85.00 363.13,82.94 363.13,87.06"/></g>
+<text x="185.00" y="79.27" font-size="7.64" text-anchor="middle" font-weight="700" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="2.29" stroke-linejoin="round">370 extended</text>
+<g stroke="#111" stroke-width="0.7" fill="#111"><line x1="145.00" y1="-40.00" x2="145.00" y2="-44.58" fill="none"/><line x1="220.00" y1="-40.00" x2="220.00" y2="-44.58" fill="none"/><line x1="145.00" y1="-40.00" x2="220.00" y2="-40.00" fill="none"/><polygon points="145.00,-40.00 151.87,-37.94 151.87,-42.06"/><polygon points="220.00,-40.00 213.13,-42.06 213.13,-37.94"/></g>
+<text x="182.50" y="-45.73" font-size="7.64" text-anchor="middle" font-weight="700" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="2.29" stroke-linejoin="round">75 min overlap</text>
+<g stroke="#111" stroke-width="0.8" font-family="Helvetica, Arial, sans-serif" font-size="7.64" fill="#111"><line x1="369.73" y1="96.45" x2="400.27" y2="96.45"/><line x1="369.73" y1="96.45" x2="369.73" y2="65.91"/><text x="403.33" y="99.13" stroke="none">+X along arm</text><text x="365.15" y="62.09" stroke="none">+Z</text></g>
+<rect x="-42.27" y="122.42" width="12.22" height="7.64" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.6"/><text x="-25.47" y="128.91" font-size="7.64" font-family="Helvetica, Arial, sans-serif" fill="#111">printed part</text>
+<rect x="-42.27" y="135.40" width="12.22" height="7.64" fill="#1e3a8a" fill-opacity="0.9" stroke="#1e3a8a" stroke-width="0.6"/><text x="-25.47" y="141.89" font-size="7.64" font-family="Helvetica, Arial, sans-serif" fill="#111">hole / slot in printed part</text>
+<rect x="-42.27" y="148.38" width="12.22" height="7.64" fill="#16a34a" fill-opacity="0.25" stroke="#16a34a" stroke-width="0.6"/><text x="-25.47" y="154.87" font-size="7.64" font-family="Helvetica, Arial, sans-serif" fill="#111">item the part holds or carries</text>
+<rect x="-42.27" y="161.36" width="12.22" height="7.64" fill="#dc2626" fill-opacity="0.9" stroke="#dc2626" stroke-width="0.6"/><text x="-25.47" y="167.85" font-size="7.64" font-family="Helvetica, Arial, sans-serif" fill="#111">mating hardware (bolt, pin, nut)</text>
+<text x="-42.27" y="185.42" font-size="7.64" font-family="Helvetica, Arial, sans-serif" fill="#444">Hinge -&gt; tip 257-370 (113 travel). Reach out from the rail face 305-418 at 0 deg;</text>
+<text x="-42.27" y="197.64" font-size="7.64" font-family="Helvetica, Arial, sans-serif" fill="#444">  drop at the 45 deg stop 182-262. Was one fixed length, 354.</text>
+<text x="-42.27" y="209.85" font-size="7.64" font-family="Helvetica, Arial, sans-serif" fill="#444">Sections: sleeve 34x24 outside, 4 wall; bar 25.4x15.4, 0.3 sliding clearance per side.</text>
+<text x="-42.27" y="222.07" font-size="7.64" font-family="Helvetica, Arial, sans-serif" fill="#444">Both pieces under 256 so they print flat, teeth up -- no split joint, no lap bolts.</text>
+<text x="-42.27" y="234.29" font-size="7.64" font-family="Helvetica, Arial, sans-serif" fill="#444">Rectangular bar: can't twist in the sleeve, so the tip joint stays aligned with the hinge.</text>
+</svg>

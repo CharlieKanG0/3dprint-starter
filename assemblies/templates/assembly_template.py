@@ -4,7 +4,7 @@
 on the rail, does the box fit where it has to...>
 
 Copy to assemblies/<name>/<name>.py (the folder and file names must match).
-API: common/assembly.py. Worked example: assemblies/shovel_on_rail/shovel_on_rail.py.
+API: common/assembly.py (its docstring has a complete example).
 
 Run:  ../../venv/bin/python <name>.py                 (viewer, OCP_PORT)
       ./venv/bin/python scripts/view.py <name>        (own viewer + tab)

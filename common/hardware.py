@@ -40,8 +40,24 @@ class HexNutSpec:
 # ISO 4032 regular hex nuts. Pocket these with FIT["slip"] added to each side
 # of the across-flats so the nut drops in but can't spin.
 HEX_NUT: dict[str, HexNutSpec] = {
+    "M5": HexNutSpec(across_flats=8.0, thickness=4.7),
     "M6": HexNutSpec(across_flats=10.0, thickness=5.2),
+    "M8": HexNutSpec(across_flats=13.0, thickness=6.8),
     "M10": HexNutSpec(across_flats=16.0, thickness=8.4),
+}
+
+# ISO 10511 nyloc (prevailing-torque) nuts: same across-flats, taller.
+NYLOC_NUT: dict[str, HexNutSpec] = {
+    "M5": HexNutSpec(across_flats=8.0, thickness=5.0),
+    "M8": HexNutSpec(across_flats=13.0, thickness=8.0),
+}
+
+# ISO 4017 hex-head bolt heads, for a pocket that captures the head so the bolt
+# can't spin (thickness = head height).
+HEX_HEAD: dict[str, HexNutSpec] = {
+    "M5": HexNutSpec(across_flats=8.0, thickness=3.5),
+    "M6": HexNutSpec(across_flats=10.0, thickness=4.0),
+    "M8": HexNutSpec(across_flats=13.0, thickness=5.3),
 }
 
 

@@ -4,8 +4,8 @@ An assembly script lives at assemblies/<name>/<name>.py (copy
 assemblies/templates/assembly_template.py). It works for any combination of
 parts -- a bracket on a slat, a box and its lid, a whole roof system:
 
-    asm = Assembly("shovel_on_rail")
-    mount = asm.part("shovel_mount")                              # fresh geometry, see part()
+    asm = Assembly("bracket_on_rail")
+    mount = asm.part("bracket")                                   # fresh geometry, see part()
     asm.ref("rail", Box(400, 40, 20), at=(0, 0, -10))             # not printed: context only
     asm.add("mount left", mount, at=(-100, 0, 0), group="mounts")
     asm.add("mount right", mount, at=(100, 0, 0), group="mounts")

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-82.75 -43.50 138.69 112.39" preserveAspectRatio="xMidYMid meet" style="width:100vw;height:100vh;display:block">
+<rect x="-82.75" y="-43.50" width="138.69" height="112.39" fill="#fff"/>
+<text x="-80.56" y="-39.35" font-size="3.05" font-weight="700" font-family="Helvetica, Arial, sans-serif" fill="#111">Claw -- top section through the grip</text>
+<circle cx="0.00" cy="0.00" r="17.00" fill="#16a34a" fill-opacity="0.25" stroke="#16a34a" stroke-width="0.8"/>
+<text x="0.00" y="0.76" font-size="2.18" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="0.65" stroke-linejoin="round">handle 34</text>
+<line x1="6.50" y1="-17.85" x2="3.30" y2="-18.71" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="3.30" y1="-18.71" x2="0.00" y2="-19.00" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="0.00" y1="-19.00" x2="-3.30" y2="-18.71" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-3.30" y1="-18.71" x2="-6.50" y2="-17.85" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-6.50" y1="-17.85" x2="-9.50" y2="-16.45" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-9.50" y1="-16.45" x2="-12.21" y2="-14.55" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-12.21" y1="-14.55" x2="-14.55" y2="-12.21" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-14.55" y1="-12.21" x2="-16.45" y2="-9.50" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-16.45" y1="-9.50" x2="-17.85" y2="-6.50" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-17.85" y1="-6.50" x2="-18.71" y2="-3.30" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-18.71" y1="-3.30" x2="-19.00" y2="-0.00" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-19.00" y1="-0.00" x2="-18.71" y2="3.30" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-18.71" y1="3.30" x2="-17.85" y2="6.50" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-17.85" y1="6.50" x2="-16.45" y2="9.50" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-16.45" y1="9.50" x2="-14.55" y2="12.21" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-14.55" y1="12.21" x2="-12.21" y2="14.55" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-12.21" y1="14.55" x2="-9.50" y2="16.45" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-9.50" y1="16.45" x2="-6.50" y2="17.85" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-6.50" y1="17.85" x2="-3.30" y2="18.71" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-3.30" y1="18.71" x2="-0.00" y2="19.00" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="-0.00" y1="19.00" x2="3.30" y2="18.71" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<line x1="3.30" y1="18.71" x2="6.50" y2="17.85" stroke="#2563eb" stroke-opacity="0.35" stroke-width="4.00" stroke-linecap="round"/>
+<rect x="-55.00" y="-5.00" width="40.00" height="10.00" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8"/>
+<rect x="-53.00" y="-24.11" width="30.00" height="18.00" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8" stroke-dasharray="6 4"/>
+<line x1="-38.00" y1="8.00" x2="-38.00" y2="-29.00" stroke="#dc2626" stroke-opacity="0.9" stroke-width="5.00" stroke-linecap="round"/>
+<text x="-57.00" y="0.76" font-size="2.18" text-anchor="end" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="0.65" stroke-linejoin="round">claw boss</text>
+<text x="-57.00" y="-13.24" font-size="2.18" text-anchor="end" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="0.65" stroke-linejoin="round">arm tip (dashed)</text>
+<g stroke="#111" stroke-width="0.7" fill="#111"><line x1="5.81" y1="15.97" x2="25.12" y2="15.97" fill="none"/><line x1="5.81" y1="-15.97" x2="25.12" y2="-15.97" fill="none"/><line x1="23.81" y1="15.97" x2="23.81" y2="-15.97" fill="none"/><polygon points="23.81,15.97 24.40,14.01 23.23,14.01"/><polygon points="23.81,-15.97 23.23,-14.01 24.40,-14.01"/></g>
+<text x="25.56" y="0.76" font-size="2.18" text-anchor="start" font-weight="700" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="0.65" stroke-linejoin="round">31.9 mouth</text>
+<g stroke="#111" stroke-width="0.7" fill="#111"><line x1="-17.00" y1="27.00" x2="-17.00" y2="25.69" fill="none"/><line x1="17.00" y1="27.00" x2="17.00" y2="25.69" fill="none"/><line x1="-17.00" y1="27.00" x2="17.00" y2="27.00" fill="none"/><polygon points="-17.00,27.00 -15.04,27.59 -15.04,26.41"/><polygon points="17.00,27.00 15.04,26.41 15.04,27.59"/></g>
+<text x="0.00" y="25.36" font-size="2.18" text-anchor="middle" font-weight="700" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="0.65" stroke-linejoin="round">34 handle</text>
+<text x="41.00" y="2.76" font-size="2.18" text-anchor="start" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="0.65" stroke-linejoin="round">push in</text>
+<g stroke="#111" stroke-width="0.8" font-family="Helvetica, Arial, sans-serif" font-size="2.18" fill="#111"><line x1="45.04" y1="30.27" x2="53.76" y2="30.27"/><line x1="45.04" y1="30.27" x2="45.04" y2="21.55"/><text x="54.64" y="31.04" stroke="none">+X out</text><text x="43.73" y="20.45" stroke="none">+Y along vehicle</text></g>
+<rect x="-80.56" y="37.69" width="3.49" height="2.18" fill="#16a34a" fill-opacity="0.25" stroke="#16a34a" stroke-width="0.6"/><text x="-75.76" y="39.55" font-size="2.18" font-family="Helvetica, Arial, sans-serif" fill="#111">item the part holds or carries</text>
+<rect x="-80.56" y="41.40" width="3.49" height="2.18" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.6"/><text x="-75.76" y="43.25" font-size="2.18" font-family="Helvetica, Arial, sans-serif" fill="#111">printed part</text>
+<rect x="-80.56" y="45.11" width="3.49" height="2.18" fill="#dc2626" fill-opacity="0.9" stroke="#dc2626" stroke-width="0.6"/><text x="-75.76" y="46.96" font-size="2.18" font-family="Helvetica, Arial, sans-serif" fill="#111">mating hardware (bolt, pin, nut)</text>
+<text x="-80.56" y="51.98" font-size="2.18" font-family="Helvetica, Arial, sans-serif" fill="#444">C-clip wraps 220 deg; mouth 31.9 vs handle 34 -&gt; arms spread 2.1 mm, snap in/out.</text>
+<text x="-80.56" y="55.47" font-size="2.18" font-family="Helvetica, Arial, sans-serif" fill="#444">Grip 30 tall x 4 wall (stock holster ~110 tall). Mouth faces outward, away from the vehicle.</text>
+<text x="-80.56" y="58.96" font-size="2.18" font-family="Helvetica, Arial, sans-serif" fill="#444">UNKNOWN: handle diameter, and whether it tapers or has a shoulder the claw can sit under</text>
+<text x="-80.56" y="62.45" font-size="2.18" font-family="Helvetica, Arial, sans-serif" fill="#444">  (a shoulder carries the weight; without one the snap grip alone has to stop it sliding down).</text>
+</svg>

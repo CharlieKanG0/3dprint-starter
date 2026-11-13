@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-182.83 -125.45 370.20 384.97" preserveAspectRatio="xMidYMid meet" style="width:100vw;height:100vh;display:block">
+<rect x="-182.83" y="-125.45" width="370.20" height="384.97" fill="#fff"/>
+<text x="-177.38" y="-115.09" font-size="7.64" font-weight="700" font-family="Helvetica, Arial, sans-serif" fill="#111">Tip joint (T2) -- side view, integrated into the claw</text>
+<line x1="-151.47" y1="-77.18" x2="0.00" y2="0.00" stroke="#2563eb" stroke-opacity="0.35" stroke-width="30.00" stroke-linecap="round"/>
+<text x="-120.00" y="-88.09" font-size="5.45" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="1.64" stroke-linejoin="round">arm, clicked 27 deg down</text>
+<rect x="21.00" y="-60.00" width="34.00" height="225.00" rx="0.00" fill="#16a34a" fill-opacity="0.25" stroke="#16a34a" stroke-width="0.8"/>
+<rect x="17.00" y="-15.00" width="42.00" height="30.00" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8"/>
+<circle cx="0.00" cy="0.00" r="15.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8"/>
+<circle cx="0.00" cy="0.00" r="2.50" fill="#dc2626" fill-opacity="0.9" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="-10.34" y="-48.03" width="34.00" height="225.00" rx="0.00" fill="#16a34a" fill-opacity="0.25" stroke="#16a34a" stroke-width="0.8" stroke-dasharray="6 4" transform="rotate(30.00 6.66 64.47)"/>
+<rect x="11.91" y="4.00" width="42.00" height="30.00" rx="0.00" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.8" stroke-dasharray="6 4" transform="rotate(30.00 32.91 19.00)"/>
+<circle cx="0.00" cy="0.00" r="2.50" fill="#dc2626" fill-opacity="0.9" stroke="#dc2626" stroke-width="0.8"/>
+<text x="78.00" y="151.91" font-size="5.45" text-anchor="start" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="1.64" stroke-linejoin="round">solid: upright</text>
+<text x="78.00" y="163.91" font-size="5.45" text-anchor="start" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="1.64" stroke-linejoin="round">dashed: aimed 30 deg toward you</text>
+<text x="-21.00" y="31.91" font-size="5.45" text-anchor="end" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="1.64" stroke-linejoin="round">joint = round boss on the claw back, dia 30</text>
+<text x="-21.00" y="43.91" font-size="5.45" text-anchor="end" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="1.64" stroke-linejoin="round">(same width as the arm)</text>
+<g stroke="#111" stroke-width="0.7" fill="#111"><line x1="0.00" y1="23.00" x2="0.00" y2="19.73" fill="none"/><line x1="38.00" y1="23.00" x2="38.00" y2="19.73" fill="none"/><line x1="0.00" y1="23.00" x2="38.00" y2="23.00" fill="none"/><polygon points="0.00,23.00 4.91,24.47 4.91,21.53"/><polygon points="38.00,23.00 33.09,21.53 33.09,24.47"/></g>
+<text x="19.00" y="18.91" font-size="5.45" text-anchor="middle" font-weight="700" font-family="Helvetica, Arial, sans-serif" fill="#111" paint-order="stroke" stroke="#fff" stroke-width="1.64" stroke-linejoin="round">38</text>
+<g stroke="#111" stroke-width="0.8" font-family="Helvetica, Arial, sans-serif" font-size="5.45" fill="#111"><line x1="160.09" y1="181.52" x2="181.91" y2="181.52"/><line x1="160.09" y1="181.52" x2="160.09" y2="159.70"/><text x="184.09" y="183.43" stroke="none">+X out</text><text x="156.82" y="156.97" stroke="none">+Z</text></g>
+<rect x="-177.38" y="200.06" width="8.73" height="5.45" fill="#2563eb" fill-opacity="0.35" stroke="#2563eb" stroke-width="0.6"/><text x="-165.38" y="204.70" font-size="5.45" font-family="Helvetica, Arial, sans-serif" fill="#111">printed part</text>
+<rect x="-177.38" y="209.33" width="8.73" height="5.45" fill="#16a34a" fill-opacity="0.25" stroke="#16a34a" stroke-width="0.6"/><text x="-165.38" y="213.97" font-size="5.45" font-family="Helvetica, Arial, sans-serif" fill="#111">item the part holds or carries</text>
+<rect x="-177.38" y="218.61" width="8.73" height="5.45" fill="#dc2626" fill-opacity="0.9" stroke="#dc2626" stroke-width="0.6"/><text x="-165.38" y="223.24" font-size="5.45" font-family="Helvetica, Arial, sans-serif" fill="#111">mating hardware (bolt, pin, nut)</text>
+<text x="-177.38" y="235.79" font-size="5.45" font-family="Helvetica, Arial, sans-serif" fill="#444">No hanger: the claw and its half of the joint are one printed piece. The arm tip sits beside the</text>
+<text x="-177.38" y="244.52" font-size="5.45" font-family="Helvetica, Arial, sans-serif" fill="#444">  boss (offset along the vehicle), so it clears the handset at every arm angle and aim.</text>
+</svg>
