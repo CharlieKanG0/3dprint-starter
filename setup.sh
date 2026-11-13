@@ -93,7 +93,7 @@ All set. Try:
   ./venv/bin/python scripts/render.py shower_mount   # PNGs in exports/
   ./venv/bin/python scripts/new.py part my_part      # start your own
 
-First, set your printer's bed size in common/printer.py.
+First, set your printer's bed size in common/printer.py and describe your project in PROJECT.md.
 Using Claude Code? Open it in this folder and describe the part you want --
 CLAUDE.md teaches it the workflow.
 EOF
