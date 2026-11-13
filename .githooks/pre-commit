@@ -1,0 +1,5 @@
+#!/bin/sh
+# Rebuild the parts this commit touches (all of them if common/ or scripts/ changed)
+# headless; a part whose assertions fail blocks the commit.
+# Enabled by: git config core.hooksPath .githooks   (bypass once: git commit --no-verify)
+exec ./venv/bin/python scripts/build_all.py --staged

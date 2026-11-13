@@ -1,0 +1,10 @@
+venv/
+.venv/
+.DS_Store
+__pycache__/
+*.pyc
+
+# Renders, viewer logs, assembly cache -- regenerated on demand.
+exports/*
+!exports/.gitkeep
+.viewer-venv/

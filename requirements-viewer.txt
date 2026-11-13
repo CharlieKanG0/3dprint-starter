@@ -1,0 +1,4 @@
+# Standalone OCP viewer (browser tab per part, scripts/view.py), installed into
+# ./.viewer-venv by ./setup.sh. Kept out of ./venv on purpose -- docs/viewer.md.
+ocp_viewer==1.2.0
+cadquery-ocp-novtk==8.0.1.1.0

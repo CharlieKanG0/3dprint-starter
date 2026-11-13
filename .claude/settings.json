@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./venv/bin/python parts/*)",
+      "Bash(./venv/bin/python assemblies/*)",
+      "Bash(./venv/bin/python scripts/*)",
+      "Bash(../../venv/bin/python *)",
+      "Read(./exports/**)"
+    ]
+  }
+}
