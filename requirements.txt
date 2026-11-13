@@ -3,4 +3,5 @@
 # Do NOT add `cadquery` to this environment -- see CLAUDE.md "Environment"
 # for why it conflicts with build123d's OCP pin.
 build123d==0.13.0
+cadquery-ocp-novtk==8.0.1.1.0  # pin the OCP binding build123d resolves to, so every machine gets the same kernel
 ocp_vscode==4.2.0

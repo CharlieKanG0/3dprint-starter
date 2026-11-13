@@ -1,7 +1,20 @@
 # Viewing a part
 
-Every part script ends with `show_part(...)` from `common/output.py`. Where the
-model lands depends on which OCP CAD Viewer is listening.
+Every part script ends with `show_part(...)` from `common/output.py`, which
+puts the model on screen by itself (`common/viewer.py`), first match wins:
+
+1. `OCP_PORT` set → that viewer (`scripts/view.py` sets it).
+2. Inside Orca (`ORCA_WORKTREE_ID` + the `orca` CLI) → the part's own
+   standalone viewer, started if needed, in a built-in browser tab (opened,
+   or switched to).
+3. The VS Code panel on 3939, if it's listening.
+4. `./.viewer-venv` installed (`./setup.sh`) → the part's own standalone
+   viewer in your default browser, opened once per viewer process
+   (`VIEW_REOPEN=1` reopens it).
+5. Otherwise a one-line note; it never waits on a prompt.
+
+The camera is reset on every push, so a changed model is never shown through
+an old zoom (`show_part(..., reset_camera=Camera.KEEP)` keeps it).
 
 | Viewer | Use when |
 | --- | --- |
@@ -76,14 +89,14 @@ labels the up axis Y). `PARAM_<NAME>=x` overrides pass through. The committed
 
 An assembly is `assemblies/<name>/<name>.py` (copy
 `assemblies/templates/assembly_template.py`, or `scripts/new.py assembly <name>`;
-worked example `assemblies/shovel_on_rail/`). It places printed parts and reference geometry (the
+the docstring of `common/assembly.py` has a complete example). It places printed parts and reference geometry (the
 rack, bought items, placeholders) and asserts how they fit, with
 `common/assembly.py`:
 
 ```python
 asm = Assembly("<name>")
 asm.ref("rail", Box(600, 40, 20), at=(0, 0, -10), group="rail")      # not printed
-mount = asm.part("shovel_mount")                                     # built fresh
+mount = asm.part("bracket")                                          # built fresh
 asm.add("mount left", mount, at=(-150, 0, 0), group="mounts")
 asm.add("mount right", mount, mirror=Plane.YZ, at=(150, 0, 0), group="mounts")
 asm.check_overlaps()                          # every pair, true solid-boolean volumes
