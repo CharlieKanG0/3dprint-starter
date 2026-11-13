@@ -38,6 +38,46 @@ Then set your printer in **`common/printer.py`** (bed size, nozzle).
 Or open Claude Code in this folder and say what you want, e.g. *"a wall
 bracket for a 32mm broom handle, two M5 screws, PETG"*.
 
+## Workflow: you and the agent
+
+Claude Code follows this loop (spelled out in `CLAUDE.md`). You supply
+measurements and decisions; the agent writes the code, checks it, and shows
+you pictures before you spend filament.
+
+```mermaid
+flowchart TD
+    subgraph H["🧑 You"]
+        H1["Describe the part<br/>+ measurements, photos, material"]
+        H2{"Confirm a layout<br/>by letter + corrections"}
+        H3{"Shape looks right?"}
+        H4["Slice the .step & print"]
+        H5{"Test fit OK?"}
+        H6["Report what's off<br/>(measured, not guessed)"]
+    end
+
+    subgraph A["🤖 Agent"]
+        A1["Sketch lettered 2D layouts<br/>layout.py → layout.svg<br/>every number sourced"]
+        A2["Write the part script<br/>named parameters, common/ hardware + fits"]
+        A3["Run it: self-checks<br/>one solid · bbox · volume · holes · bed fit"]
+        A4["Render PNGs + compare<br/>to your photos"]
+        A5["Fix the part, or update<br/>common/tolerances.py / hardware.py"]
+        A6["Move it to Done<br/>in parts/BACKLOG.md"]
+    end
+
+    H1 --> A1 --> H2
+    H2 -- "corrections" --> A1
+    H2 -- "confirmed" --> A2 --> A3
+    A3 -- "assertion fails" --> A2
+    A3 -- "passes" --> A4 --> H3
+    H3 -- "no" --> A2
+    H3 -- "yes" --> H4 --> H5
+    H5 -- "no" --> H6 --> A5 --> A3
+    H5 -- "yes" --> A6
+```
+
+Doing it without an agent? The same loop works by hand: `scripts/new.py`,
+edit, run, `scripts/render.py`, print.
+
 VS Code users: install the recommended extensions when prompted (OCP CAD
 Viewer). The interpreter is preset to `./venv`, so each run of a part script
 updates the viewer panel.
