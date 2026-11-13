@@ -8,7 +8,9 @@
 
 The split: FRAMEWORK paths (below) are the shared workflow -- helpers, scripts, templates,
 docs, CLAUDE.md, the worked example. Everything else is YOURS -- your parts, assemblies,
-PROJECT.md, common/printer.py, parts/BACKLOG.md -- and never leaves this repo.
+PROJECT.md, common/printer.py, parts/BACKLOG.md -- and never leaves this repo. A file of
+your own inside a shared folder (say common/my_rail.py) goes in `.upstream-private`,
+one path per line, and is then yours too.
 
 Rule that makes this work: a commit is either framework-only or yours-only. `push`
 cherry-picks the framework-only commits made since the last sync onto the starter's main
@@ -34,13 +36,25 @@ FRAMEWORK = (
     "AGENTS.md", "CLAUDE.md", "README.md", "setup.sh", "requirements.txt", "requirements-viewer.txt",
     ".python-version", ".gitignore", ".gitattributes", "exports/.gitkeep",
 )
-YOURS = ("PROJECT.md", "common/printer.py", "parts/BACKLOG.md", ".claude/settings.local.json")
+YOURS = ("PROJECT.md", "common/printer.py", "parts/BACKLOG.md", ".claude/settings.local.json", ".upstream-private")
+PRIVATE_LIST = ROOT / ".upstream-private"  # optional: more of your own paths, one per line ("dir/" for a folder)
+
+
+def _matches(path: str, patterns) -> bool:
+    return any(path == p or (p.endswith("/") and path.startswith(p)) for p in patterns)
+
+
+def private_paths() -> tuple[str, ...]:
+    if not PRIVATE_LIST.exists():
+        return ()
+    lines = (ln.split("#", 1)[0].strip() for ln in PRIVATE_LIST.read_text().splitlines())
+    return tuple(ln for ln in lines if ln)
 
 
 def is_framework(path: str) -> bool:
-    if path in YOURS:
+    if _matches(path, YOURS + private_paths()):
         return False
-    return any(path == f or (f.endswith("/") and path.startswith(f)) for f in FRAMEWORK)
+    return _matches(path, FRAMEWORK)
 
 
 def git(*args: str, check: bool = True, cwd: Path = ROOT) -> str:

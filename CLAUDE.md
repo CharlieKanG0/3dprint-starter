@@ -78,7 +78,9 @@ https://github.com/CharlieKanG0/3dprint-starter. The **framework** -- `common/`,
 `scripts/`, the templates, `docs/`, `CLAUDE.md`, the skill, the worked example;
 the exact list is in `scripts/upstream.py` -- is the workflow everyone shares.
 Your parts and assemblies, `PROJECT.md`, `common/printer.py` and
-`parts/BACKLOG.md` are **yours** and never leave this repo.
+`parts/BACKLOG.md` are **yours** and never leave this repo. A file of your own
+inside a shared folder (a helper for your own hardware in `common/`, say) is
+listed in `.upstream-private` so it stays yours too.
 
 - Never mix the two in one commit: a workflow fix is its own commit, a part
   is its own commit. `scripts/upstream.py` refuses mixed commits.
