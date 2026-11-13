@@ -8,7 +8,9 @@ description: Use whenever the user asks to design, make, model, or change a phys
 Follow `CLAUDE.md` "Workflow". This is the order, with the steps people skip in bold.
 
 1. **Read every photo first.** The installed-state photo settles orientation.
-   Say what you can see and what you can't.
+   Say what you can see and what you can't. **Open every product link or model
+   name yourself** -- spec table, every gallery photo, the maker's datasheet --
+   before asking the user for a single dimension.
 2. **Ask before drawing.** Name the facts you need (what it holds, where it
    mounts, measurements, how it's used, materials, hardware) in one short
    list. If the user says "assume the rest", assume -- and write every

@@ -38,7 +38,12 @@ walks the whole loop.
    matter. Draw each candidate layout as its own lettered schematic. The
    user confirms by letter plus corrections; "yes" to an either/or is not a
    confirmation. Then, and only then, set `CONFIRMED` in `layout.py` to
-   their letter, corrections and the date. Reference photos settle
+   their letter, corrections and the date. Given a product link or model
+   name, read it yourself before asking for anything: the spec table and
+   every gallery photo (a browser tool if you have one, else fetch the HTML
+   and download the images, else search for the maker's datasheet). Ask the
+   user only for what none of those give, say what you tried, and source each
+   number in `notes()` (datasheet / retailer spec / measured). Reference photos settle
    orientation, so read the installed-state photo before the first line of
    geometry. A new mechanism mid-design (a different joint, lock, or way to
    fold) goes back to this step: sketch lettered options, don't just code one.
@@ -66,10 +71,26 @@ walks the whole loop.
 
 ### Improving the workflow
 
-Treat this workflow as a product. When a task hits friction (a wrong build, a
-slow feedback loop, something explained twice), end by proposing one concrete
-fix: a helper in `common/`, a check in `scripts/`, a template, or a doc. Keep
-every fix generic, so it serves any future part and not just the one at hand.
+Treat this workflow as a product. Watch for friction the whole time, not only
+when asked: a wrong build, a slow feedback loop, something the user had to
+explain twice. Make a small fix that is clearly in scope as you go; end a part
+task by proposing one concrete fix for anything bigger: a helper in `common/`,
+a check in `scripts/`, a template, or a doc. Confirm before anything that
+touches the user's settings or other projects.
+
+Keep every fix generic, so it serves any future part and not just the one at
+hand:
+- Workflow steps point at templates and helpers, never at one part's files;
+  a part's own files are at most a worked example.
+- No part-specific names, roles or dimensions inside `common/` helpers.
+- Before calling a new helper done, try it on an unrelated shape (a helper
+  written for a bracket should also draw or build a tube clamp).
+
+**Lessons live in the repo, not in agent memory.** When the user corrects how
+you work and the lesson would apply to any part, write it here, in the skill,
+or as a helper or check -- as a framework commit -- not only in your private
+memory. Memory stays on one machine; the repo reaches every copy. Personal
+facts (their printer, vehicle, editor) go in `PROJECT.md`.
 
 ### Framework vs. your project
 
