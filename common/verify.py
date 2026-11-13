@@ -14,6 +14,39 @@ from OCP.BRepAdaptor import BRepAdaptor_Surface
 from common import printer
 
 
+def require_layout(script: str, exempt: str | None = None) -> None:
+    """Refuse to build a part until its layout sketch exists AND the user has confirmed it.
+
+    CLAUDE.md step 0 as a check: parts/<name>/layout.py must have been run (a layout*.svg
+    next to it) and must set, at module level,
+
+        CONFIRMED = "B + toothed hinge, no pull-pin -- user, 2026-11-13"
+
+    i.e. the letter the user picked, their corrections, and the date. Call it at the top of
+    the part script: `require_layout(__file__)`. For a genuinely trivial part (a spacer, a
+    washer) pass `exempt="why no sketch is needed"` -- the reason is printed on every build.
+    """
+    import ast
+    from pathlib import Path
+
+    folder = Path(script).resolve().parent
+    name = folder.name
+    if exempt:
+        print(f"{name}: layout sketch skipped -- {exempt}")
+        return
+    layout = folder / "layout.py"
+    step0 = "CLAUDE.md step 0: sketch lettered layouts in layout.py, show them, get the user's letter + corrections"
+    assert layout.exists(), f"{name}: no layout.py -- {step0} (scripts/new.py creates it)."
+    assert any(folder.glob("layout*.svg")), f"{name}: layout.py has never been run (no layout*.svg) -- {step0}."
+    confirmed = None
+    for node in ast.parse(layout.read_text()).body:
+        if isinstance(node, ast.Assign) and any(getattr(t, "id", None) == "CONFIRMED" for t in node.targets):
+            confirmed = node.value.value if isinstance(node.value, ast.Constant) else None
+    assert isinstance(confirmed, str) and confirmed.strip(), (
+        f"{name}: the layout is not confirmed -- {step0}, then set CONFIRMED in layout.py to their choice "
+        f"(letter + corrections + date). Don't fill it in yourself before they answer.")
+
+
 @dataclass(frozen=True)
 class CylinderAxis:
     """A cylindrical face's TRUE OCC axis (not Face.center(), which is wrong for

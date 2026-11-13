@@ -55,7 +55,8 @@ def main() -> int:
             text = text.replace("## Backlog\n\n", f"## Backlog\n\n{line}", 1)
             backlog.write_text(text)
             print(f"added {name} to parts/BACKLOG.md")
-        print(f"\nnext: fill in parts/{name}/layout.py, run it, open layout.svg; then the part script")
+        print(f"\nnext: sketch lettered layouts in parts/{name}/layout.py, run it, look at layout*.svg, get the user's "
+              f"letter + corrections, set CONFIRMED there -- the part script won't build until then")
     return 0
 
 

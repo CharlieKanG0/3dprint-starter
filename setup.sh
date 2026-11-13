@@ -77,6 +77,7 @@ fi
 step "git pre-commit hook (re-checks touched parts before each commit)"
 [[ -d .git ]] || git init -q -b main
 git config core.hooksPath .githooks
+git config merge.ours.driver true  # .gitattributes: your PROJECT.md/printer.py/BACKLOG keep your version on merges
 chmod +x .githooks/pre-commit
 ok "core.hooksPath = .githooks"
 
@@ -88,8 +89,8 @@ cat <<'EOF'
 
 All set. Try:
 
-  ./venv/bin/python scripts/view.py shovel_mount     # example part in a browser tab
-  ./venv/bin/python scripts/render.py shovel_mount   # PNGs in exports/
+  ./venv/bin/python scripts/view.py shower_mount     # example part in a browser tab
+  ./venv/bin/python scripts/render.py shower_mount   # PNGs in exports/
   ./venv/bin/python scripts/new.py part my_part      # start your own
 
 First, set your printer's bed size in common/printer.py.

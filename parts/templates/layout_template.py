@@ -22,6 +22,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # repo root, for `
 
 from common.sketch import Sketch
 
+# The user's decision, filled in ONLY after they answer: the letter they picked, their
+# corrections, and the date. The part script refuses to build while this is empty
+# (common/verify.py require_layout).
+CONFIRMED = ""
+
 # ---------------------------------------------------------------------------
 # Dimensions (mm) -- same names as the part script where they overlap
 # ---------------------------------------------------------------------------

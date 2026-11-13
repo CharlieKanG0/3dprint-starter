@@ -29,7 +29,12 @@ from common.verify import (  # noqa: F401
     assert_single_solid,
     assert_volume,
     bed_fit,
+    require_layout,
 )
+
+# No geometry before the user has confirmed a layout (CLAUDE.md step 0). This fails
+# until layout.py has been run and its CONFIRMED line records the user's choice.
+require_layout(__file__)
 
 # ---------------------------------------------------------------------------
 # Parameters (all dimensions in mm)
@@ -61,6 +66,7 @@ with BuildPart() as part:
 # Verify before exporting -- common/verify.py
 # ---------------------------------------------------------------------------
 
+assert part.part is not None, "the part is empty -- build it in the BuildPart block above"
 assert_single_solid(part.part)
 # TODO: once you know the expected numbers, add:
 #   assert_bbox(part.part, (X, Y, Z))

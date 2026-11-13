@@ -10,6 +10,21 @@ When working in this repo, act as an expert mechanical engineer and Python
 software architect: every dimension should be traceable to a reason (a
 datasheet, a measured part, a standard), not eyeballed.
 
+Who this copy belongs to and what they build -- printer, materials, the thing
+their parts attach to, their editor -- is in `PROJECT.md`, imported here:
+
+@PROJECT.md
+
+## The one rule: sketch first
+
+A request to design or change a part starts with questions and a layout
+sketch, **never with geometry**. The first reply reads the photos, says what
+is known and what is assumed, and draws lettered candidate layouts (step 0
+below). The part script refuses to build until `layout.py` records the user's
+choice (`require_layout` in `common/verify.py`), so skipping the sketch only
+produces an error. The `design-part` skill (`.claude/skills/design-part/`)
+walks the whole loop.
+
 ## Workflow
 
 0. **Sketch before you model.** Draw the assembly as a labelled 2D schematic
@@ -17,11 +32,16 @@ datasheet, a measured part, a standard), not eyeballed.
    creates `parts/<name>/layout.py` (and the part script), draw what exists, the part and the hardware at
    true positions, add dimensions, state each number's source (measured /
    datasheet / assumed) in `notes()`, and run it to get `layout.svg`. Look at
-   it yourself (convert it to PNG or open it in a browser) and check it before showing the user; add a side view when heights
+   it yourself before showing the user (macOS: `qlmanage -t -s 1200 -o <dir>
+   layout.svg` writes a PNG you can read; or open it in the browser and
+   screenshot it) and fix overlapping labels; add a side view when heights
    matter. Draw each candidate layout as its own lettered schematic. The
    user confirms by letter plus corrections; "yes" to an either/or is not a
-   confirmation. Reference photos settle orientation, so read the
-   installed-state photo before the first line of geometry.
+   confirmation. Then, and only then, set `CONFIRMED` in `layout.py` to
+   their letter, corrections and the date. Reference photos settle
+   orientation, so read the installed-state photo before the first line of
+   geometry. A new mechanism mid-design (a different joint, lock, or way to
+   fold) goes back to this step: sketch lettered options, don't just code one.
 1. Fill in `parts/<name>/<name>.py` (from `parts/templates/part_template.py`,
    created by `scripts/new.py` above).
 2. Name every dimension as a parameter at the top of the script. No magic
@@ -31,9 +51,12 @@ datasheet, a measured part, a standard), not eyeballed.
    ```
    ./venv/bin/python parts/<name>/<name>.py
    ```
-   This exports `<name>.step` next to the script and pushes the model to
-   the running OCP CAD Viewer (VS Code panel, or a browser tab via
-   `scripts/view.py <name>`) — setup and commands in `docs/viewer.md`.
+   This exports `<name>.step` next to the script and shows the model in an
+   OCP viewer by itself -- an Orca built-in browser tab, the VS Code panel,
+   or your default browser (`common/viewer.py`, `docs/viewer.md`). **Finish
+   every design step with a plain run** (not `PART_CHECK`), so the user sees
+   the finished model without asking; screenshot it and check it before you
+   report.
 4. Render the first build (`./venv/bin/python scripts/render.py <name>` ->
    PNGs in `exports/`; read them) and compare it to the
    reference photos before refining. A wrong shape caught here costs one build; caught after the
@@ -47,6 +70,25 @@ Treat this workflow as a product. When a task hits friction (a wrong build, a
 slow feedback loop, something explained twice), end by proposing one concrete
 fix: a helper in `common/`, a check in `scripts/`, a template, or a doc. Keep
 every fix generic, so it serves any future part and not just the one at hand.
+
+### Framework vs. your project
+
+This repo is (a copy of) the shared starter,
+https://github.com/CharlieKanG0/3dprint-starter. The **framework** -- `common/`,
+`scripts/`, the templates, `docs/`, `CLAUDE.md`, the skill, the worked example;
+the exact list is in `scripts/upstream.py` -- is the workflow everyone shares.
+Your parts and assemblies, `PROJECT.md`, `common/printer.py` and
+`parts/BACKLOG.md` are **yours** and never leave this repo.
+
+- Never mix the two in one commit: a workflow fix is its own commit, a part
+  is its own commit. `scripts/upstream.py` refuses mixed commits.
+- Personal facts (your printer, material, vehicle, editor) go in `PROJECT.md`
+  or `common/printer.py`, never into framework files.
+- `./venv/bin/python scripts/upstream.py status` shows workflow commits not
+  yet shared and starter updates not yet merged; `pull` merges the starter's
+  updates; `push` publishes your framework-only commits (ask the owner
+  first -- it is a public repo). A `pre-push` hook blocks any push of your
+  own files to the starter remote.
 
 ### Environment
 
@@ -73,7 +115,7 @@ separate venv.
   places the parts with reference geometry and asserts overlaps, contact and
   clearances; `view.py`, `render.py` and `build_all.py` take its name like a
   part's. Add one as soon as a part has to fit something else -- see
-  `docs/viewer.md`; worked example `assemblies/shovel_on_rail/`.
+  `docs/viewer.md`; `common/assembly.py`'s docstring has a complete example.
 - `PARAM_<NAME>=x ./venv/bin/python parts/<name>/<name>.py` sweeps a
   parameter declared with `param()` (`common/params.py`); sweeps never
   overwrite the `.step`.
@@ -132,11 +174,17 @@ part's script.
 
 ## Verify before calling a part done
 
-Every part script ends with the checks in `common/verify.py`:
-`assert_single_solid` (catches the stray-blob bug above), `assert_bbox`,
-`assert_volume`, `assert_holes` (true axes), and `bed_fit(...)` printed so
-the print orientation is on record. Prefer extending that module over
-writing a check inline in one part.
+Every part script starts with `require_layout(__file__)` and ends with the
+checks in `common/verify.py`: `assert_single_solid` (catches the stray-blob
+bug above), `assert_bbox`, `assert_volume`, `assert_holes` (true axes), and
+`bed_fit(...)` printed so the print orientation is on record. Prefer
+extending that module over writing a check inline in one part.
+
+Parts that move (hinges, sliders, clips) check their fit in the script at
+every limit of travel -- each click position, the stops, stowed -- and
+include a positive control that proves the check can see a collision (e.g.
+half a click out of mesh must overlap). `common/face_teeth.py` builds
+spring-loaded click joints.
 
 ## Parts backlog
 
@@ -146,6 +194,9 @@ line, move it to "Done" once printed and fit-checked.
 
 ## Worked example
 
-`parts/shovel_mount/` + `assemblies/shovel_on_rail/` show the house style
-end to end. Copy their patterns; don't build on them. The owner may delete
-them.
+`parts/shower_mount/` shows the whole loop on a real multi-part mechanism:
+`layout.py` with the lettered sketches and the `CONFIRMED` record, then
+`shower_mount.py` -- named parameters with sources, `ASSUMED` values listed
+in the header, a toothed click hinge (`common/face_teeth.py`), a telescopic
+arm, eight supportless prints, and fit checks for every moving part. Copy its
+patterns; don't build on it. The owner may delete it.

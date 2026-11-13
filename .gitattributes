@@ -1,0 +1,5 @@
+# Files that belong to whoever uses this repo: on `git merge` from the starter,
+# your version wins when both sides changed (setup.sh sets merge.ours.driver).
+PROJECT.md merge=ours
+common/printer.py merge=ours
+parts/BACKLOG.md merge=ours

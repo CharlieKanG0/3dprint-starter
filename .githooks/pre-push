@@ -1,0 +1,6 @@
+#!/bin/sh
+# Refuse to push your own parts/PROJECT.md/printer.py to the shared starter remote
+# (git config cad.upstream). Other remotes are not checked. See scripts/upstream.py.
+PY=./venv/bin/python
+[ -x "$PY" ] || PY=python3
+exec "$PY" scripts/upstream.py check-push "$1"
