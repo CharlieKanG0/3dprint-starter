@@ -54,6 +54,25 @@ if [[ $MINIMAL == 0 ]]; then
   fi
 fi
 
+# --- 3b. VS Code OCP CAD Viewer extension (if VS Code is installed) ----------
+if [[ $MINIMAL == 0 ]]; then
+  step "VS Code OCP CAD Viewer panel"
+  CODE=""
+  if have code; then
+    CODE=code
+  elif [[ -x "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" ]]; then
+    CODE="/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
+  fi
+  if [[ -n "$CODE" ]]; then
+    for ext in ms-python.python bernhard-42.ocp-cad-viewer; do
+      "$CODE" --install-extension "$ext" >/dev/null 2>&1 && ok "$ext" || warn "could not install $ext"
+    done
+    ok "interpreter preset to ./venv (.vscode/settings.json), which already has ocp_vscode"
+  else
+    warn "VS Code not found -- skipped (the browser viewer, scripts/view.py, works without it)"
+  fi
+fi
+
 # --- 4. git + pre-commit hook ------------------------------------------------
 step "git pre-commit hook (re-checks touched parts before each commit)"
 [[ -d .git ]] || git init -q -b main

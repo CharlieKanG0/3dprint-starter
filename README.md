@@ -20,8 +20,9 @@ macOS or Linux, with git installed:
 
 That installs everything into this folder: Python 3.12 + build123d (`./venv`),
 a browser-based 3D viewer (`./.viewer-venv`), F3D for PNG renders (via
-Homebrew), and a pre-commit check. It ends by building the example part. It's
-safe to re-run any time. `./setup.sh --minimal` skips the viewer and F3D.
+Homebrew), the VS Code OCP CAD Viewer extension (if VS Code is installed), and
+a pre-commit check. It ends by building the example part. It's
+safe to re-run any time. `./setup.sh --minimal` skips the viewers and F3D.
 
 Then set your printer in **`common/printer.py`** (bed size, nozzle).
 
@@ -78,8 +79,7 @@ flowchart TD
 Doing it without an agent? The same loop works by hand: `scripts/new.py`,
 edit, run, `scripts/render.py`, print.
 
-VS Code users: install the recommended extensions when prompted (OCP CAD
-Viewer). The interpreter is preset to `./venv`, so each run of a part script
+VS Code users: setup installs the OCP CAD Viewer extension. The interpreter is preset to `./venv`, so each run of a part script
 updates the viewer panel.
 
 ## Layout
