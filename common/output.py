@@ -49,6 +49,37 @@ def export_part(part, path: str | Path) -> bool:
     return True
 
 
+def export_mesh(mesh, path: str | Path) -> bool:
+    """`export_part` for a mesh part (a modified downloaded model, common/meshmod.py): writes a
+    geometry-only 3MF to `path`. Same modes as `export_part`: nothing in check mode or a PARAM_*
+    sweep; in render mode (PART_RENDER=dir) an STL goes to `dir` for scripts/render.py."""
+    from common import meshmod
+
+    render_dir = os.environ.get("PART_RENDER")
+    if render_dir:
+        out = Path(render_dir)
+        out.mkdir(parents=True, exist_ok=True)
+        meshmod.write_stl(mesh, out / (Path(path).stem + ".stl"))
+        return True
+    if check_mode() or os.environ.get("PART_NO_EXPORT") or any(k.startswith("PARAM_") for k in os.environ):
+        return False
+    meshmod.write_3mf(mesh, path, name=Path(path).stem)
+    return True
+
+
+def show_mesh(mesh, ghost=None, name: str | None = None) -> None:
+    """`show_part` for a mesh: writes exports/<name>/view.html and opens it in an Orca tab (else the
+    default browser). `ghost` = the original model, drawn see-through for comparison. No-op in
+    check and render mode. Needs internet (three.js from a CDN); see common/meshview.py."""
+    if check_mode() or os.environ.get("PART_RENDER"):
+        return
+    from common import meshview, printer
+
+    name = name or Path(sys.argv[0]).stem
+    url = meshview.open_view(meshview.write_view(mesh, name, ghost=ghost, bed=printer.BED))
+    print(f"show_mesh: {name} -> {url}")
+
+
 def show_part(*objects, name: str | None = None, **kwargs) -> None:
     """Show objects in an OCP viewer -- in Orca, its own built-in browser tab, opened
     automatically (common/viewer.py has the order). No-op in check and render mode;

@@ -105,6 +105,8 @@ holes a little small or loose, Claude records that for every future part too.
 
 - **[Designing a part](designing.md)**: good requests, photos, measuring,
   choosing options, fixing fits.
+- **[Changing a model you downloaded](modifying.md)**: make a MakerWorld or
+  Printables model lighter, faster to print, or add a hole or a clamp.
 - **[Glossary](glossary.md)**: what STEP, slicer, tolerance and friends mean.
 - **[Updates and sharing](sharing.md)**: getting toolbox improvements, keeping
   your designs private.

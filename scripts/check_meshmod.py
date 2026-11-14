@@ -1,0 +1,121 @@
+"""Self-check for the downloaded-model workflow (common/meshmod.py, common/printplan.py).
+
+    ./venv/bin/python scripts/check_meshmod.py
+
+Builds its own test models (no downloads) and proves, with positive and negative controls, that:
+  - an STL made from an unrelated shape (a bracket) loads, edits, and passes the probes;
+  - a 3MF in inches, with a mirrored build transform and a component in a separate file (the way
+    Bambu Studio / Orca store models), comes out in millimetres with a valid, outward-facing mesh;
+  - a hole probe really does fail when the hole is in the wrong place;
+  - a mesh with a gap is reported as unusable, refused by apply_changes, and fixed by repair;
+  - what write_3mf writes reads back unchanged;
+  - the filament estimate behaves (fewer walls, less plastic; a solid wall ignores infill).
+Run by scripts/build_all.py, so a change to common/ can't silently break the workflow.
+"""
+
+import io
+import sys
+import tempfile
+import zipfile
+from dataclasses import replace
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+import numpy as np  # noqa: E402
+import trimesh  # noqa: E402
+from build123d import Box, Cylinder, Pos, Rot, export_stl  # noqa: E402
+
+from common import meshmod as mm  # noqa: E402
+from common import printplan as pp  # noqa: E402
+
+
+def raises(fn, what: str) -> None:
+    try:
+        fn()
+    except AssertionError:
+        return
+    raise SystemExit(f"FAIL: {what} should have been refused but was not")
+
+
+def bracket_stl(path: Path) -> None:
+    """An L-bracket, nothing to do with any particular model."""
+    shape = Pos(0, 0, 2.5) * Box(60, 30, 5) + Pos(-27.5, 0, 22.5) * Box(5, 30, 45)  # upright overlaps the slab: 45 tall, 5 thick
+    export_stl(shape, str(path))
+
+
+def three_mf_inches(path: Path) -> None:
+    """A 1 x 2 x 3 inch box in a component file, placed by a mirrored (det < 0) build transform."""
+    box = trimesh.creation.box((1, 2, 3))
+    box.apply_translation(box.extents / 2)  # corner at the origin, so faces/winding are plain
+    v = "".join(f'<vertex x="{x}" y="{y}" z="{z}"/>' for x, y, z in box.vertices)
+    t = "".join(f'<triangle v1="{a}" v2="{b}" v3="{c}"/>' for a, b, c in box.faces)
+    ns = 'xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xmlns:p="http://schemas.microsoft.com/3dmanufacturing/production/2015/06"'
+    part = f'<model unit="inch" {ns}><resources><object id="1"><mesh><vertices>{v}</vertices><triangles>{t}</triangles></mesh></object></resources></model>'
+    main = (f'<model unit="inch" {ns}><resources><object id="2"><components>'
+            '<component p:path="/3D/Objects/o.model" objectid="1" transform="1 0 0 0 1 0 0 0 1 0 0 0"/></components></object></resources>'
+            '<build><item objectid="2" transform="-1 0 0 0 1 0 0 0 1 10 20 5"/></build></model>')  # mirror X, move
+    with zipfile.ZipFile(path, "w") as zf:
+        zf.writestr("3D/3dmodel.model", main)
+        zf.writestr("3D/Objects/o.model", part)
+
+
+def main() -> int:
+    tmp = Path(tempfile.mkdtemp(prefix="meshmod_check_"))
+
+    # 1. unrelated shape, end to end -------------------------------------------------
+    stl = tmp / "bracket.stl"
+    bracket_stl(stl)
+    base = mm.load_model(stl)
+    assert mm.health(base).usable and abs(base.volume - (60 * 30 * 5 + 5 * 30 * 40)) < 1, "bracket volume"
+    mm.assert_mesh_bbox(base, (60, 30, 45))
+    hole = Pos(10, 0, 2.5) * Cylinder(3, 20)
+    boss = Pos(-27.5, 0, 22.5) * (Rot(0, 90, 0) * Cylinder(8, 12))  # a pad on the upright, away from the horizontal hole
+    out = mm.apply_changes(base, add=[boss], cut=[hole])
+    mm.assert_watertight(out)
+    mm.assert_single_body(out)
+    mm.assert_solid_at(base, (10, 0, 2.5))   # positive control: material there before the cut
+    mm.assert_void_at(out, (10, 0, 2.5))     # the hole is open
+    mm.assert_solid_at(out, (10 + 5, 0, 2.5))  # and only there
+    raises(lambda: mm.assert_void_at(out, (10 + 15, 0, 2.5)), "a void probe where there is material")  # negative control
+    assert out.extents[0] > base.extents[0] - 1e-6 and out.volume != base.volume
+    assert mm.mesh_bed_fit(out).fits
+    loops = mm.section_loops(base, "y")
+    assert loops and max(len(lp) for lp in loops) >= 6, "section of an L profile"
+
+    # 2. 3MF dialect: inches, component file, mirrored transform ------------------------
+    f = tmp / "inches.3mf"
+    three_mf_inches(f)
+    m = mm.load_model(f)
+    assert np.allclose(sorted(m.extents), [25.4, 50.8, 76.2], atol=1e-3), f"inch box extents {m.extents}"
+    assert m.volume > 0 and m.is_watertight and m.is_winding_consistent, "mirrored transform must keep faces outward"
+    assert abs(m.volume - 25.4 * 50.8 * 76.2) < 5, "inch box volume"
+
+    # 3. write_3mf round trip ----------------------------------------------------------
+    r = mm.load_model(mm.write_3mf(out, tmp / "out.3mf", name="out"))
+    assert abs(r.volume - out.volume) < 0.5 and np.allclose(r.extents, out.extents, atol=1e-3), "3MF round trip"
+    assert mm.source_info(tmp / "out.3mf").title == "out"
+
+    # 4. a broken mesh -----------------------------------------------------------------
+    holey = base.copy()
+    holey.update_faces(np.arange(len(holey.faces)) != 3)  # drop one triangle: a gap in the skin
+    assert not mm.health(holey).usable
+    raises(lambda: mm.apply_changes(holey, cut=[hole]), "editing a mesh with a gap")
+    assert mm.health(mm.repair(holey)).usable, "repair should close a one-triangle gap"
+
+    # 5. the estimate -------------------------------------------------------------------
+    thick = trimesh.creation.box((60, 60, 60))
+    prof = pp.Profile(walls=3, infill=0.15)
+    e3, e2 = pp.estimate(thick, prof), pp.estimate(thick, replace(prof, walls=2))
+    assert e2.plastic_mm3 < e3.plastic_mm3, "fewer walls must use less plastic on a thick part"
+    thin = trimesh.creation.box((60, 60, 1.0))  # thinner than the walls: all perimeter, infill irrelevant
+    assert abs(pp.estimate(thin, replace(prof, infill=0.05)).plastic_mm3 - pp.estimate(thin, replace(prof, infill=0.5)).plastic_mm3) < 1e-6
+    assert pp.read_profile(stl) is None and pp.read_profile(tmp / "out.3mf") is None
+
+    print("meshmod ok: bracket STL edit + probes, inch/mirrored 3MF, round trip, broken-mesh refusal, estimates")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

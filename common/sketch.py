@@ -93,6 +93,24 @@ class Sketch:
         if label:
             self.text(cx, cy - r - self.fs, label)
 
+    def polygon(self, loops, role, label=None, dashed=False):
+        """Filled outline from one or more closed point loops [(x, y), ...] (the even-odd rule, so a loop
+        inside another is a hole). Draws a slice of an existing model: common/meshmod.py `draw_section`."""
+        loops = [[(float(x), float(y)) for x, y in loop] for loop in loops if len(loop) >= 3]
+        if not loops:
+            return
+        col, op = self._use(role)
+        d = " ".join("M " + " L ".join(self._p(x, y) for x, y in loop) + " Z" for loop in loops)
+        dash = ' stroke-dasharray="6 4"' if dashed else ""
+        xs = [x for loop in loops for x, _ in loop]
+        ys = [y for loop in loops for _, y in loop]
+        self._add(
+            f'<path d="{d}" fill-rule="evenodd" fill="{col}" fill-opacity="{op}" stroke="{col}" stroke-width="0.8"{dash}/>',
+            (min(xs), min(ys), max(xs), max(ys)),
+        )
+        if label:
+            self.text((min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2, label)
+
     def bar(self, a, b, width, role):
         """Thick line with round ends (an arm, a strap)."""
         col, op = self._use(role)

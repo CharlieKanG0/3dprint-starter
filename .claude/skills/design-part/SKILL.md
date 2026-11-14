@@ -5,6 +5,8 @@ description: Use whenever the user asks to design, make, model, or change a phys
 
 # Design a part: sketch first, then model
 
+(Starting from a model the user **downloaded** -- a `.3mf` / `.stl`? Use the `modify-model` skill instead.)
+
 Follow `CLAUDE.md` "Workflow". This is the order, with the steps people skip in bold.
 
 1. **Read every photo first.** The installed-state photo settles orientation.

@@ -16,6 +16,11 @@ puts the model on screen by itself (`common/viewer.py`), first match wins:
    (`VIEW_REOPEN=1` reopens it).
 5. Otherwise a one-line note; it never waits on a prompt.
 
+Modified downloaded models (meshes, `docs/modifying.md`) use `show_mesh(...)`
+instead: it writes `exports/<name>/view.html` and opens it the same way (an Orca tab, else
+your browser). The original is drawn as a see-through grey ghost. It loads three.js from a
+CDN, so it needs internet. `scripts/render.py` renders them with F3D like any part.
+
 The camera is reset on every push, so a changed model is never shown through
 an old zoom (`show_part(..., reset_camera=Camera.KEEP)` keeps it).
 

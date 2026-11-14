@@ -19,6 +19,9 @@ Don't worry about getting it all: Claude asks for what's missing. You can
 also say *"assume the rest"*, and Claude picks sensible values and lists
 every guess so you can check them later.
 
+Starting from a model someone else made? See
+**[Changing a model you downloaded](modifying.md)**.
+
 ## Photos help more than words
 
 - **Where it goes:** the spot it attaches to, from a little way back.

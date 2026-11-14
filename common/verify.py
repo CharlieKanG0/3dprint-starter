@@ -152,6 +152,13 @@ class BedFit:
 def bed_fit(part, bed: tuple[float, float] = printer.BED, margin: float = printer.BED_MARGIN) -> BedFit:
     """Smallest-footprint rotation of the part about Z (any 0-179 degrees) on the bed (common/printer.py)."""
     pts = [(p.X, p.Y) for e in part.edges() for p in (e.position_at(i / 16) for i in range(17))]
+    return fit_points(pts, bed, margin)
+
+
+def fit_points(pts: list[tuple[float, float]], bed: tuple[float, float] = printer.BED,
+               margin: float = printer.BED_MARGIN) -> BedFit:
+    """`bed_fit` for any outline given as (x, y) points -- a CAD part's edges, or a mesh's hull
+    (common/meshmod.py `mesh_bed_fit`)."""
     best = None
     for deg in range(180):
         a = math.radians(deg)

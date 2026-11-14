@@ -57,6 +57,11 @@ including installing Claude Code and printing your first part.
 
 More on each step, with tips: **[Designing a part](docs/designing.md)**.
 
+**Already have a model you downloaded** (a `.3mf` from MakerWorld, say) and want
+to change it: lighter, faster to print, or with a hole or clamp added? Claude
+checks the file, tells you where the plastic goes, and edits it the same
+sketch-first way: **[Changing a model you downloaded](docs/modifying.md)**.
+
 ## What you get
 
 For each part, one or more **`.step` files**: the 3D shapes, already turned
@@ -96,6 +101,8 @@ without an AI too:
 ./venv/bin/python parts/phone_holder/layout.py       # draw the sketches (set CONFIRMED to your pick)
 ./venv/bin/python parts/phone_holder/phone_holder.py # build it: checks, .step files, 3D viewer
 ./venv/bin/python scripts/render.py phone_holder     # pictures of it in exports/
+./venv/bin/python scripts/inspect_model.py model.3mf # health check of a downloaded model
+./venv/bin/python scripts/new.py mod my_change model.3mf  # start changing a downloaded model
 ./venv/bin/python scripts/build_all.py               # re-check every part
 ./venv/bin/python scripts/things.py                  # what's measured, and what's still a guess
 ```

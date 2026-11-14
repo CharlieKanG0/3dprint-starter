@@ -3,6 +3,7 @@
     ./venv/bin/python scripts/new.py part <name>        # parts/<name>/<name>.py + layout.py
     ./venv/bin/python scripts/new.py assembly <name>    # assemblies/<name>/<name>.py
     ./venv/bin/python scripts/new.py thing <name>       # things/<name>.py: a real object your parts fit
+    ./venv/bin/python scripts/new.py mod <name> <file>  # modify a downloaded .3mf/.stl (docs/modifying.md)
 
 <name> is snake_case and must not already be used by a part or an assembly
 (scripts find either kind by name -- common/project.py). The part also gets a
@@ -11,6 +12,8 @@ Backlog line in parts/BACKLOG.md.
 """
 
 import re
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -31,7 +34,48 @@ def new_thing(name: str) -> int:
     return 0
 
 
+def new_mod(name: str, source: str) -> int:
+    """parts/<name>/ for modifying a downloaded model: a copy of the file, an inspection report, a layout
+    that already draws the model's slices, and a part script that loads it (docs/modifying.md)."""
+    src = Path(source).expanduser().resolve()
+    if not src.is_file() or src.suffix.lower() not in (".3mf", ".stl"):
+        sys.exit(f"{source}: give the path of a downloaded .3mf or .stl file")
+    if name in {s.stem for s in all_scripts()}:
+        sys.exit(f"{name!r} already exists")
+    folder = ROOT / "parts" / name
+    (folder / "source").mkdir(parents=True)
+    fname = re.sub(r"[^A-Za-z0-9_.-]+", "_", src.name)
+    shutil.copy2(src, folder / "source" / fname)
+    print(f"copied the download to {(folder / 'source' / fname).relative_to(ROOT)}")
+    title = name.replace("_", " ").capitalize()
+    for dst, tmpl in ((folder / f"{name}.py", "mod_template.py"), (folder / "layout.py", "mod_layout_template.py")):
+        text = (ROOT / "parts/templates" / tmpl).read_text()
+        for placeholder, value in (("<source_file>", fname), ("<part_name>", name), ("<name>", name), ("<Part name>", title), ("<Part>", title)):
+            text = text.replace(placeholder, value)
+        dst.write_text(text)
+        print(f"created {dst.relative_to(ROOT)}")
+    report = subprocess.run([sys.executable, str(ROOT / "scripts/inspect_model.py"), str(src), "--write", str(folder / "report.md")],
+                            capture_output=True, text=True)
+    if report.returncode != 0:
+        print(f"could not inspect the file:\n{report.stderr.strip()[-600:]}")
+    else:
+        print(f"created {(folder / 'report.md').relative_to(ROOT)} (read it: size, condition, the creator's print settings)")
+    backlog = ROOT / "parts/BACKLOG.md"
+    text = backlog.read_text()
+    if "## Backlog\n" in text:
+        line = f"- **{name}** -- TODO modify downloaded `{fname}`. `parts/{name}/`\n"
+        backlog.write_text(text.replace("## Backlog\n\n", f"## Backlog\n\n{line}", 1))
+        print(f"added {name} to parts/BACKLOG.md")
+    print(f"\nnext: run parts/{name}/layout.py (it draws the model's slices), then sketch lettered options for the change, "
+          f"get the user's letter + corrections, set CONFIRMED -- the part script won't build until then")
+    return 0
+
+
 def main() -> int:
+    if len(sys.argv) == 4 and sys.argv[1] == "mod":
+        if not re.fullmatch(r"[a-z][a-z0-9_]*", sys.argv[2]) or sys.argv[2] == "templates":
+            sys.exit(f"{sys.argv[2]!r}: use snake_case, e.g. pole_clamp")
+        return new_mod(sys.argv[2], sys.argv[3])
     if len(sys.argv) != 3 or sys.argv[1] not in ("part", "assembly", "thing"):
         print(__doc__)
         return 2

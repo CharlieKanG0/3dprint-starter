@@ -23,7 +23,7 @@ make and what it attaches to, how they run Claude Code (Orca, Terminal, or VS
 Code -- it decides where sketches and models open), and whether they have
 calipers. Write the answers into `PROJECT.md`, remove the marker, and carry on
 with whatever they asked. The user-facing guides are in `docs/`
-(`getting-started.md`, `designing.md`, `glossary.md`, `sharing.md`).
+(`getting-started.md`, `designing.md`, `modifying.md`, `glossary.md`, `sharing.md`).
 
 Who this copy belongs to and what they build -- printer, materials, the thing
 their parts attach to, their editor -- is in `PROJECT.md`, imported here:
@@ -104,6 +104,27 @@ walks the whole loop.
    details are in, it costs all of them.
 5. Once a part has been printed and test-fit, move its backlog line from
    "Backlog" to "Done" in `parts/BACKLOG.md`.
+
+### Modifying a downloaded model
+
+A `.3mf` / `.stl` the user downloaded (MakerWorld, Printables...) is a **mesh**, not a CAD solid. The
+`modify-model` skill (`.claude/skills/modify-model/`) and `docs/modifying.md` walk the loop; the rules:
+
+- **Inspect before anything else:** `./venv/bin/python scripts/inspect_model.py <file>` (size, bed fit,
+  closed or gappy, the creator's slicer settings and printer, where the plastic goes, licence). Weight
+  and time in its table are estimates (about +-25%), never facts.
+- **Pick the lightest route:** only lighter/faster -> slicer settings, no geometry; add or cut a feature
+  -> mesh edit (`scripts/new.py mod <name> <file>`: `common/meshmod.py`, booleans by manifold3d, the new
+  geometry drawn in build123d); changed proportions -> rebuild in build123d.
+- **Sketch first, as ever.** `layout.py` for a mod already draws slices of the real mesh as "existing",
+  so dimensions are measured from the file, not the photos. `CONFIRMED` still waits for the user's letter.
+- **Never edit a mesh that is not watertight** (`meshmod.health`, `repair`); never fuse an addition on a
+  shared face (overlap ~1 mm). Check each feature by probing space (`assert_void_at` / `assert_solid_at`)
+  with a positive control, plus `assert_watertight`, `assert_single_body`, bbox, volume, bed fit.
+- **Output is a geometry-only `.3mf`** (`export_mesh`): the user's slicer profile applies, never the
+  creator's. Keep the original in `parts/<name>/source/`.
+- `scripts/check_meshmod.py` self-tests the helpers (`build_all.py` runs it): extend it with any
+  helper you add.
 
 ### Improving the workflow
 

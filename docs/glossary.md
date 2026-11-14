@@ -37,6 +37,10 @@ showing where the part sits and how it works. Options are lettered A, B, C.
 **M5, M6, M8...** Metric bolt sizes: the number is the thread diameter in
 millimetres. M6 is about the thickness of a pencil.
 
+**Mesh.** How a downloaded model is stored: a skin made of thousands of tiny
+triangles. Unlike a CAD design it has no "hole" or "wall" you can change by number, so
+Claude adds or cuts things on top of it. See [Changing a model you downloaded](modifying.md).
+
 **Nyloc nut.** A nut with a nylon ring inside, so it doesn't shake loose. Common on
 moving joints.
 
@@ -50,11 +54,18 @@ for cars and outdoors (best in an enclosed printer).
 **Repo.** Short for repository: this project folder, with its full history. It
 lives on your computer.
 
+**3MF file (`.3mf`).** A 3D file that MakerWorld and Bambu Studio use. It holds the
+shape and, often, the creator's print settings. Claude reads both, and writes a shape-only
+`.3mf` for models it modifies.
+
 **Slicer.** The app that turns a 3D file into printer instructions: Bambu Studio,
 OrcaSlicer, PrusaSlicer, Cura...
 
 **STEP file (`.step`).** The 3D shape file Claude makes for each piece. Drag it into
 your slicer. More precise than STL, and every modern slicer opens it.
+
+**Watertight.** A mesh whose skin is fully closed, with no gaps, so it is a true solid.
+Needed before Claude can add or cut anything on a downloaded model.
 
 **T-channel / T-slot.** The slotted rail on roof racks and aluminium frames, into
 which special nuts slide so you can bolt things on anywhere along it.

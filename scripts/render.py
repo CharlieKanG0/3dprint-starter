@@ -56,9 +56,9 @@ def main() -> int:
     if run.returncode != 0:
         print(run.stdout + run.stderr, file=sys.stderr)
         return run.returncode
-    steps = sorted([*out_dir.glob("*.step"), *out_dir.glob("*.glb")]) if out_dir.exists() else []
+    steps = sorted([*out_dir.glob("*.step"), *out_dir.glob("*.glb"), *out_dir.glob("*.stl")]) if out_dir.exists() else []
     if not steps:
-        print(f"{script.name} exported nothing -- no export_part() / Assembly.finish() call?", file=sys.stderr)
+        print(f"{script.name} exported nothing -- no export_part() / export_mesh() / Assembly.finish() call?", file=sys.stderr)
         return 1
 
     for step in steps:
@@ -75,7 +75,7 @@ def y_up(vec: str) -> str:
 
 
 def render(step: Path, views: list[str], size: int) -> int:
-    """`step` is a part's .step, or an assembly's .glb (glTF: Y-up, colours + transparency)."""
+    """`step` is a part's .step, an assembly's .glb (glTF: Y-up, colours + transparency), or a mesh part's .stl."""
     gltf = step.suffix == ".glb"
     for name in views:
         direction, up = VIEWS[name]
@@ -90,7 +90,10 @@ def render(step: Path, views: list[str], size: int) -> int:
         ]
         # A STEP is drawn with its B-rep edges; a glTF is a triangle mesh, so --edges would
         # draw every triangle. --blending honours its alpha (see-through reference geometry).
-        cmd.append("--blending" if gltf else "--edges")
+        if gltf:
+            cmd.append("--blending")
+        elif step.suffix != ".stl":  # an STL is a triangle mesh too: --edges would outline every triangle
+            cmd.append("--edges")
         if name != "iso":
             cmd.append("--camera-orthographic")
         res = subprocess.run(cmd, capture_output=True, text=True)

@@ -62,6 +62,12 @@ def main() -> int:
     if inv.returncode != 0:  # things/INVENTORY.md is generated; CLAUDE.md imports it, so it must be current
         print(inv.stdout.strip())
         return 1
+    if args in ([], ["--staged"]):  # the downloaded-model helpers (common/meshmod.py): cheap, and every mod part depends on them
+        chk = subprocess.run([sys.executable, str(ROOT / "scripts/check_meshmod.py")], capture_output=True, text=True)
+        print(f"{'ok  ' if chk.returncode == 0 else 'FAIL'}  meshmod self-check")
+        if chk.returncode != 0:
+            print("\n".join(("      " + ln) for ln in (chk.stderr or chk.stdout).strip().splitlines()[-8:]))
+            return 1
     if args == ["--staged"]:
         args = staged_parts()
         if not args:
