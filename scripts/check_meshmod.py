@@ -99,6 +99,13 @@ def main() -> int:
     r = mm.load_model(mm.write_3mf(out, tmp / "out.3mf", name="out"))
     assert abs(r.volume - out.volume) < 0.5 and np.allclose(r.extents, out.extents, atol=1e-3), "3MF round trip"
     assert mm.source_info(tmp / "out.3mf").title == "out"
+    # ...and it lands mid-bed, on the plate: a slicer puts (0, 0) at the bed's front-left corner
+    on_bed = mm.load_model(tmp / "out.3mf", place=False)
+    lo, hi = on_bed.bounds
+    assert np.allclose((lo[:2] + hi[:2]) / 2, np.array(mm.printer.BED) / 2, atol=1e-3) and abs(lo[2]) < 1e-3, (lo, hi)
+    raises(lambda: np.testing.assert_allclose(
+        mm.load_model(mm.write_3mf(out, tmp / "raw.3mf", bed=None), place=False).bounds[0][:2], lo[:2], atol=1e-3),
+        "a 3MF written with bed=None keeping the model's own place")
 
     # 4. a broken mesh -----------------------------------------------------------------
     holey = base.copy()

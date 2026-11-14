@@ -369,10 +369,21 @@ def draw_section(sketch, mesh: trimesh.Trimesh, axis: str = "z", at: float | Non
 # Export
 # ---------------------------------------------------------------------------
 
-def write_3mf(mesh: trimesh.Trimesh, path: str | Path, name: str = "model") -> Path:
+def write_3mf(mesh: trimesh.Trimesh, path: str | Path, name: str = "model", bed=printer.BED) -> Path:
     """A plain geometry-only 3MF in millimetres (no print settings: the slicer applies yours).
-    Orca, Bambu Studio and PrusaSlicer all open it."""
+    Orca, Bambu Studio and PrusaSlicer all open it.
+
+    Slicers place a 3MF where its coordinates say, with (0, 0) at the bed's front-left corner, so a
+    model centred on the origin loads half off the plate (or out of sight). The build item therefore
+    carries a move that puts the model's footprint centre mid-bed and its lowest point on the plate;
+    the mesh itself is written unchanged. `bed=None` keeps the file's own coordinates."""
     path = Path(path)
+    move = np.zeros(3)
+    if bed is not None:
+        lo, hi = mesh.bounds
+        move = np.array([bed[0] / 2 - (lo[0] + hi[0]) / 2, bed[1] / 2 - (lo[1] + hi[1]) / 2, -lo[2]])
+    item = f'<item objectid="1" transform="1 0 0 0 1 0 0 0 1 {move[0]:.5f} {move[1]:.5f} {move[2]:.5f}"/>'
+
     v = mesh.vertices
     f = mesh.faces
     verts = "".join(f'<vertex x="{x:.5f}" y="{y:.5f}" z="{z:.5f}"/>' for x, y, z in v)
@@ -383,7 +394,7 @@ def write_3mf(mesh: trimesh.Trimesh, path: str | Path, name: str = "model") -> P
         f'<model unit="millimeter" xml:lang="en-US" xmlns="{NS_CORE}">'
         f'<metadata name="Title">{safe}</metadata><metadata name="Application">3dprint (common/meshmod.py)</metadata>'
         f'<resources><object id="1" type="model"><mesh><vertices>{verts}</vertices><triangles>{tris}</triangles></mesh>'
-        '</object></resources><build><item objectid="1"/></build></model>'
+        f'</object></resources><build>{item}</build></model>'
     )
     rels = ('<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
             '<Relationship Target="/3D/3dmodel.model" Id="rel0" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/></Relationships>')
