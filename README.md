@@ -120,9 +120,9 @@ gets updates. If you started your own repo from it:
 ./venv/bin/python scripts/upstream.py push     # share workflow-only commits back
 ```
 
-Keep workflow fixes and parts in separate commits. `push` only sends
-workflow-only commits, and a `pre-push` hook stops any push of your own files
-to the starter.
+Keep workflow fixes and parts in separate commits. `push` only ever sends
+workflow files -- a commit that mixes in a part is published without the part
+-- and a `pre-push` hook stops any push of your own files to the starter.
 Read them, then delete them whenever you like.
 
 ## Tune it to your printer

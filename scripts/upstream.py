@@ -12,9 +12,11 @@ PROJECT.md, common/printer.py, parts/BACKLOG.md -- and never leaves this repo. A
 your own inside a shared folder (say common/my_rail.py) goes in `.upstream-private`,
 one path per line, and is then yours too.
 
-Rule that makes this work: a commit is either framework-only or yours-only. `push`
-cherry-picks the framework-only commits made since the last sync onto the starter's main
-and pushes them; it refuses a commit that mixes both (split it). `.githooks/pre-push`
+How `push` works: it takes the commits made since the last sync, oldest first, and
+replays them onto the starter's main -- a framework-only commit as it is, a commit that
+mixes framework files with your own with ONLY its framework files (same message and
+author; your files are left out and stay here). Your-only commits are skipped. Keeping
+fixes and parts in separate commits is still the habit to aim for. `.githooks/pre-push`
 runs `check-push` so a plain `git push` to the starter can't leak your parts either.
 
 Config (git config, set by `setup`): cad.upstream = remote name (default "upstream"),
@@ -89,16 +91,16 @@ def classify(sha: str) -> str:
 
 
 def candidates(up: str) -> list[str]:
-    """Local non-merge commits since the sync point that the starter doesn't have yet (by patch)."""
+    """Local non-merge commits since the sync point that the starter doesn't have yet (by patch),
+    oldest first."""
     since = config("cad.upstream-since")
     if since:
         sha = git("rev-parse", "--verify", "--quiet", f"{since}^{{commit}}", check=False)
         if not sha or len(sha) != 40 or since != sha:
             sys.exit(f"cad.upstream-since is '{since}', not a commit id -- run: ./venv/bin/python scripts/upstream.py mark")
     rng = f"{since}..HEAD" if since else f"{up}/main..HEAD"
-    mine = set(git("rev-list", "--no-merges", rng).split())
-    unpublished = [ln[2:] for ln in git("cherry", f"{up}/main", "HEAD").splitlines() if ln.startswith("+ ")]
-    return [c for c in unpublished if c in mine]
+    unpublished = {ln[2:] for ln in git("cherry", f"{up}/main", "HEAD").splitlines() if ln.startswith("+ ")}
+    return [c for c in git("rev-list", "--reverse", "--no-merges", rng).split() if c in unpublished]
 
 
 def subject(sha: str) -> str:
@@ -111,13 +113,13 @@ def cmd_status() -> int:
     groups: dict[str, list[str]] = {"framework": [], "mixed": [], "yours": []}
     for c in candidates(up):
         groups.setdefault(classify(c), []).append(c)
-    print("to publish (framework only):" if groups["framework"] else "nothing to publish")
+    print("to publish (framework only):" if groups["framework"] else "nothing to publish whole")
     for c in groups["framework"]:
         print("   ", subject(c))
     if groups["mixed"]:
-        print("MIXED -- split these into a framework commit and a parts commit before `push`:")
+        print("mixed -- `push` publishes only their framework files; your files stay here:")
         for c in groups["mixed"]:
-            print("   ", subject(c), "->", ", ".join(files_of(c)))
+            print("   ", subject(c), "-> keeps local:", ", ".join(f for f in files_of(c) if not is_framework(f)))
     print(f"yours, staying local: {len(groups['yours'])} commit(s)")
     behind = git("rev-list", "--count", f"HEAD..{up}/main")
     print(f"starter commits not merged here yet: {behind}" + ("  (run `pull`)" if behind != "0" else ""))
@@ -132,35 +134,56 @@ def cmd_pull() -> int:
     return out.returncode
 
 
+def _replay(c: str, wt: Path) -> bool:
+    """Apply commit `c` in the temp worktree `wt`, keeping only its framework files.
+    Returns False if nothing of it is left to publish."""
+    run = lambda *a, **k: subprocess.run(["git", *a], cwd=wt, capture_output=True, text=True, **k)  # noqa: E731
+    if classify(c) == "framework":
+        r = run("cherry-pick", c)
+        if r.returncode != 0:
+            run("cherry-pick", "--abort")
+    else:  # mixed: a patch of only its framework files -- your files are never applied at all
+        fw = [f for f in files_of(c) if is_framework(f)]
+        patch = git("diff", "--binary", f"{c}^", c, "--", *fw) + "\n"
+        r = run("apply", "--index", "--3way", "-", input=patch)
+        if r.returncode == 0:
+            if run("diff", "--cached", "--quiet").returncode == 0:
+                return False
+            r = subprocess.run(["git", "-c", "core.hooksPath=/dev/null", "commit", "-q", "-C", c],
+                               cwd=wt, capture_output=True, text=True)
+        else:
+            run("reset", "-q", "--hard", "HEAD")
+    if r.returncode != 0:
+        sys.exit(f"replaying {subject(c)} conflicts with the starter -- `pull` first, then retry.\n"
+                 f"{r.stdout}{r.stderr}")
+    return True
+
+
 def cmd_push() -> int:
     up = remote()
     git("fetch", "-q", up)
-    todo = [c for c in candidates(up) if classify(c) != "yours" and classify(c) != "empty"]
-    mixed = [c for c in todo if classify(c) == "mixed"]
-    if mixed:
-        print("refusing: these commits mix framework files with your own (split them first):")
-        for c in mixed:
-            print("   ", subject(c), "->", ", ".join(files_of(c)))
-        return 1
+    todo = [c for c in candidates(up) if classify(c) in ("framework", "mixed")]  # oldest first
     if not todo:
         print("nothing to publish")
         return 0
     print("publishing to the starter's main:")
-    for c in reversed(todo):
-        print("   ", subject(c))
+    for c in todo:
+        kept = [f for f in files_of(c) if not is_framework(f)]
+        print("   ", subject(c) + (f"   (framework files only; keeps local: {', '.join(kept)})" if kept else ""))
+    published = 0
     with tempfile.TemporaryDirectory() as tmp:
         wt = Path(tmp) / "starter"
         git("worktree", "add", "-q", "--detach", str(wt), f"{up}/main")
         try:
-            for c in reversed(todo):  # oldest first
-                r = subprocess.run(["git", "cherry-pick", c], cwd=wt, capture_output=True, text=True)
-                if r.returncode != 0:
-                    subprocess.run(["git", "cherry-pick", "--abort"], cwd=wt)
-                    sys.exit(f"cherry-pick of {subject(c)} conflicts with the starter -- `pull` first, then retry.\n"
-                             f"{r.stdout}{r.stderr}")
-            subprocess.run(["git", "push", up, "HEAD:main"], cwd=wt, check=True)
+            for c in todo:
+                published += _replay(c, wt)
+            if published:
+                subprocess.run(["git", "push", up, "HEAD:main"], cwd=wt, check=True)
         finally:
             git("worktree", "remove", "--force", str(wt), check=False)
+    if not published:
+        print("nothing left to publish after leaving your files out")
+        return 0
     git("fetch", "-q", up)
     rc = cmd_pull()
     if rc == 0:
