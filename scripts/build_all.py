@@ -9,7 +9,9 @@ A part is any parts/<name>/<name>.py, an assembly any assemblies/<name>/<name>.p
 PART_CHECK=1, so nothing is exported or sent to a viewer (see common/output.py)
 and committed .step files are never rewritten. Run by the pre-commit hook
 (.githooks/pre-commit) with --staged, so a change to common/ can't silently break
-a part while a half-finished part elsewhere can't block an unrelated commit.
+a part while a half-finished part elsewhere can't block an unrelated commit. A part whose layout.py
+is still waiting for the user's letter (CONFIRMED empty) is listed as "wait", not failed:
+it refuses to build by design, and that must not block a fix to the shared code.
 """
 
 import os
@@ -21,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from common.project import all_scripts, kind_of  # noqa: E402
+from common.verify import layout_pending  # noqa: E402
 
 
 def discover(names: list[str]) -> list[Path]:
@@ -74,6 +77,9 @@ def main() -> int:
             print("no staged part or shared-code changes; nothing to check")
             return 0
     for script in discover(args):
+        if layout_pending(script.parent):
+            print(f"wait  {script.stem}  (layout not confirmed yet: waiting for the user's letter)")
+            continue
         result = subprocess.run(
             [sys.executable, str(script)], env=env, capture_output=True, text=True, timeout=600
         )

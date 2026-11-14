@@ -14,6 +14,31 @@ from OCP.BRepAdaptor import BRepAdaptor_Surface
 from common import printer
 
 
+def layout_confirmed(folder) -> str | None:
+    """The CONFIRMED string recorded in <folder>/layout.py, or None if there is no layout.py or it is
+    still empty (the user has not picked a letter yet). Read without running layout.py."""
+    import ast
+    from pathlib import Path
+
+    layout = Path(folder) / "layout.py"
+    if not layout.exists():
+        return None
+    confirmed = None
+    for node in ast.parse(layout.read_text()).body:
+        if isinstance(node, ast.Assign) and any(getattr(t, "id", None) == "CONFIRMED" for t in node.targets):
+            confirmed = node.value.value if isinstance(node.value, ast.Constant) else None
+    return confirmed if isinstance(confirmed, str) and confirmed.strip() else None
+
+
+def layout_pending(folder) -> bool:
+    """True while <folder>/layout.py has a CONFIRMED line that is still empty: sketches drawn, the
+    user's letter not in yet. (A part from before the sketch rule, with no CONFIRMED line, is not pending.)"""
+    from pathlib import Path
+
+    layout = Path(folder) / "layout.py"
+    return layout.exists() and "\nCONFIRMED" in "\n" + layout.read_text() and layout_confirmed(folder) is None
+
+
 def require_layout(script: str, exempt: str | None = None) -> None:
     """Refuse to build a part until its layout sketch exists AND the user has confirmed it.
 
@@ -26,7 +51,6 @@ def require_layout(script: str, exempt: str | None = None) -> None:
     the part script: `require_layout(__file__)`. For a genuinely trivial part (a spacer, a
     washer) pass `exempt="why no sketch is needed"` -- the reason is printed on every build.
     """
-    import ast
     from pathlib import Path
 
     folder = Path(script).resolve().parent
@@ -38,11 +62,8 @@ def require_layout(script: str, exempt: str | None = None) -> None:
     step0 = "CLAUDE.md step 0: sketch lettered layouts in layout.py, show them, get the user's letter + corrections"
     assert layout.exists(), f"{name}: no layout.py -- {step0} (scripts/new.py creates it)."
     assert any(folder.glob("layout*.svg")), f"{name}: layout.py has never been run (no layout*.svg) -- {step0}."
-    confirmed = None
-    for node in ast.parse(layout.read_text()).body:
-        if isinstance(node, ast.Assign) and any(getattr(t, "id", None) == "CONFIRMED" for t in node.targets):
-            confirmed = node.value.value if isinstance(node.value, ast.Constant) else None
-    assert isinstance(confirmed, str) and confirmed.strip(), (
+    confirmed = layout_confirmed(folder)
+    assert confirmed, (
         f"{name}: the layout is not confirmed -- {step0}, then set CONFIRMED in layout.py to their choice "
         f"(letter + corrections + date). Don't fill it in yourself before they answer.")
     # With lettered candidates on file (layout_a.svg, layout_b_side.svg, ...), the choice must name one of them.
