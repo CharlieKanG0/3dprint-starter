@@ -35,7 +35,9 @@ Follow `CLAUDE.md` "Workflow". This is the order, with the steps people skip in 
    it, compare with the photos, and render (`scripts/render.py <name>`) on a
    first build.
 9. **Report**: what was built, what the checks cover, every ASSUMED value,
-   hardware to buy, what to print first to test.
+   hardware to buy, what to print first to test -- and, if the user described
+   a new real object future parts will likely fit, offer to save it to
+   `things/` (CLAUDE.md), unless you already asked.
 
 A new mechanism halfway through (a different joint, a lock, a way to fold)
 goes back to step 3 with lettered options for it.

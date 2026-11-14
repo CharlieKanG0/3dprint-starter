@@ -22,15 +22,17 @@ is on file and what is still unmeasured is imported here:
 
 @things/INVENTORY.md
 
-- **Check `things/` before asking for a measurement.** If the number is there,
-  use it (and say which source tag it has); if it is ASSUMED, say so.
-- **Parts import from `things/`, never retype a thing's dimension**, so a
-  corrected measurement reaches every part that uses it.
-- **When the user gives a measurement of something future parts may fit,
-  record it in `things/` then and there** (`scripts/new.py thing <name>`),
-  with its tag, date and where it came from; save reference photos as
-  `things/photos/<name>_*.jpg`. Then `scripts/things.py --write` regenerates
-  the inventory (`build_all` fails while it is stale).
+- **When a part fits something already on file, use it:** import the numbers
+  from `things/` (never retype them, so a corrected measurement reaches every
+  part) and don't ask for what is there; say if a value you rely on is
+  ASSUMED. Unrelated parts can ignore `things/`.
+- **When the user describes a new real object that future parts are likely to
+  fit** (a rack, a rail, a board -- not a one-off measurement), **offer once**
+  to save it to `things/`: fold the question into ones you are already asking,
+  or into the final report. If they say yes, `scripts/new.py thing <name>`,
+  tag every number with its source and date, save their photos as
+  `things/photos/<name>_*.jpg`, and run `scripts/things.py --write`
+  (`build_all` fails while the inventory is stale).
 - Parts-specific design choices stay in the part; `things/` holds only facts
   about the real object.
 
