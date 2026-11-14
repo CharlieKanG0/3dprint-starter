@@ -37,6 +37,8 @@ session.
 ./venv/bin/python scripts/view.py phone_holder       # orbit it in a browser tab
 ./venv/bin/python scripts/render.py phone_holder     # iso/top/front/right PNGs in exports/
 ./venv/bin/python scripts/build_all.py               # re-check every part
+./venv/bin/python scripts/new.py thing roof_rack     # record something your parts fit, once
+./venv/bin/python scripts/things.py                  # what's on file, and what's still to measure
 ```
 
 Or open Claude Code in this folder and say what you want, e.g. *"a wall
@@ -94,6 +96,7 @@ updates the viewer panel.
 | Path | What |
 | --- | --- |
 | `parts/<name>/` | one printable part: `layout.py` (the confirmed sketch), `<name>.py`, its exported `.step` files |
+| `things/` | yours: the real objects your parts fit (rack, rail, boards...), one module each, every number tagged with its source; `INVENTORY.md` is generated and read by the agent every session so it doesn't ask twice |
 | `assemblies/<name>/` | several parts plus reference geometry, with fit checks (overlaps, gaps, contact) |
 | `common/` | shared helpers: `printer.py`, `hardware.py` (bolts, inserts, nuts), `tolerances.py` (fit clearances), `verify.py`, `sketch.py`, `assembly.py` |
 | `scripts/` | `new.py`, `view.py`, `render.py`, `build_all.py`, `upstream.py` |

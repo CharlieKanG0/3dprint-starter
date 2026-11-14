@@ -3,3 +3,4 @@
 PROJECT.md merge=ours
 common/printer.py merge=ours
 parts/BACKLOG.md merge=ours
+things/INVENTORY.md merge=ours

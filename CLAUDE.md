@@ -15,6 +15,25 @@ their parts attach to, their editor -- is in `PROJECT.md`, imported here:
 
 @PROJECT.md
 
+The real objects this copy's parts fit -- a roof platform, a rail, recovery
+boards, a handset -- live in `things/<name>.py`, one module each, every number
+tagged MEASURED / DATASHEET / GIVEN / ASSUMED. The generated inventory of what
+is on file and what is still unmeasured is imported here:
+
+@things/INVENTORY.md
+
+- **Check `things/` before asking for a measurement.** If the number is there,
+  use it (and say which source tag it has); if it is ASSUMED, say so.
+- **Parts import from `things/`, never retype a thing's dimension**, so a
+  corrected measurement reaches every part that uses it.
+- **When the user gives a measurement of something future parts may fit,
+  record it in `things/` then and there** (`scripts/new.py thing <name>`),
+  with its tag, date and where it came from; save reference photos as
+  `things/photos/<name>_*.jpg`. Then `scripts/things.py --write` regenerates
+  the inventory (`build_all` fails while it is stale).
+- Parts-specific design choices stay in the part; `things/` holds only facts
+  about the real object.
+
 ## The one rule: sketch first
 
 A request to design or change a part starts with questions and a layout

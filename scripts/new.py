@@ -2,6 +2,7 @@
 
     ./venv/bin/python scripts/new.py part <name>        # parts/<name>/<name>.py + layout.py
     ./venv/bin/python scripts/new.py assembly <name>    # assemblies/<name>/<name>.py
+    ./venv/bin/python scripts/new.py thing <name>       # things/<name>.py: a real object your parts fit
 
 <name> is snake_case and must not already be used by a part or an assembly
 (scripts find either kind by name -- common/project.py). The part also gets a
@@ -18,13 +19,27 @@ sys.path.insert(0, str(ROOT))
 from common.project import all_scripts  # noqa: E402
 
 
+def new_thing(name: str) -> int:
+    path = ROOT / "things" / f"{name}.py"
+    if path.exists():
+        sys.exit(f"things/{name}.py already exists -- add to it")
+    text = (ROOT / "things/templates/thing_template.py").read_text()
+    path.write_text(text.replace("<Thing name>", name.replace("_", " ").capitalize()).replace("<name>", name))
+    import subprocess
+    subprocess.run([sys.executable, str(ROOT / "scripts/things.py"), "--write"], check=True)
+    print(f"created things/{name}.py -- fill in the numbers with their source tags; parts import from it")
+    return 0
+
+
 def main() -> int:
-    if len(sys.argv) != 3 or sys.argv[1] not in ("part", "assembly"):
+    if len(sys.argv) != 3 or sys.argv[1] not in ("part", "assembly", "thing"):
         print(__doc__)
         return 2
     kind, name = sys.argv[1], sys.argv[2]
     if not re.fullmatch(r"[a-z][a-z0-9_]*", name) or name == "templates":
         sys.exit(f"{name!r}: use snake_case, e.g. phone_holder")
+    if kind == "thing":
+        return new_thing(name)
     if name in {s.stem for s in all_scripts()}:
         sys.exit(f"{name!r} already exists")
 

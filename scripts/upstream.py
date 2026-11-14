@@ -8,7 +8,8 @@
 
 The split: FRAMEWORK paths (below) are the shared workflow -- helpers, scripts, templates,
 docs, CLAUDE.md, the worked example. Everything else is YOURS -- your parts, assemblies,
-PROJECT.md, common/printer.py, parts/BACKLOG.md -- and never leaves this repo. A file of
+things/ (the real objects they fit), PROJECT.md, common/printer.py, parts/BACKLOG.md --
+and never leaves this repo. A file of
 your own inside a shared folder (say common/my_rail.py) goes in `.upstream-private`,
 one path per line, and is then yours too.
 
@@ -38,7 +39,9 @@ FRAMEWORK = (
     "AGENTS.md", "CLAUDE.md", "README.md", "setup.sh", "requirements.txt", "requirements-viewer.txt",
     ".python-version", ".gitignore", ".gitattributes", "exports/.gitkeep",
 )
-YOURS = ("PROJECT.md", "common/printer.py", "parts/BACKLOG.md", ".claude/settings.local.json", ".upstream-private")
+YOURS = ("PROJECT.md", "common/printer.py", "parts/BACKLOG.md", ".claude/settings.local.json", ".upstream-private",
+         "things/")  # things/: your platform, boards, rails... (but see FRAMEWORK_IN_YOURS)
+FRAMEWORK_IN_YOURS = ("things/__init__.py", "things/templates/")  # the convention itself is shared
 PRIVATE_LIST = ROOT / ".upstream-private"  # optional: more of your own paths, one per line ("dir/" for a folder)
 
 
@@ -54,6 +57,8 @@ def private_paths() -> tuple[str, ...]:
 
 
 def is_framework(path: str) -> bool:
+    if _matches(path, FRAMEWORK_IN_YOURS):
+        return True
     if _matches(path, YOURS + private_paths()):
         return False
     return _matches(path, FRAMEWORK)

@@ -34,7 +34,7 @@ def discover(names: list[str]) -> list[Path]:
 
 
 # A staged change under any of these can affect every part, so it checks them all.
-SHARED = ("common/", "scripts/", "requirements.txt", ".githooks/")
+SHARED = ("common/", "things/", "scripts/", "requirements.txt", ".githooks/")
 
 
 def staged_parts() -> list[str]:
@@ -58,6 +58,10 @@ def main() -> int:
     env = {**os.environ, "PART_CHECK": "1"}
     failed = []
     args = sys.argv[1:]
+    inv = subprocess.run([sys.executable, str(ROOT / "scripts/things.py"), "--check"], capture_output=True, text=True)
+    if inv.returncode != 0:  # things/INVENTORY.md is generated; CLAUDE.md imports it, so it must be current
+        print(inv.stdout.strip())
+        return 1
     if args == ["--staged"]:
         args = staged_parts()
         if not args:
