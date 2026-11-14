@@ -9,7 +9,9 @@ Builds its own test models (no downloads) and proves, with positive and negative
   - a hole probe really does fail when the hole is in the wrong place;
   - a mesh with a gap is reported as unusable, refused by apply_changes, and fixed by repair;
   - what write_3mf writes reads back unchanged;
-  - the filament estimate behaves (fewer walls, less plastic; a solid wall ignores infill).
+  - the filament estimate behaves (fewer walls, less plastic; a solid wall ignores infill);
+  - a sketch turned to its installed orientation (`Sketch(turn=...)`) puts things where they should be
+    and labels the axes right, for a mesh slice and a plain shape alike.
 Run by scripts/build_all.py, so a change to common/ can't silently break the workflow.
 """
 
@@ -29,6 +31,7 @@ from build123d import Box, Cylinder, Pos, Rot, export_stl  # noqa: E402
 
 from common import meshmod as mm  # noqa: E402
 from common import printplan as pp  # noqa: E402
+from common.sketch import Sketch  # noqa: E402
 
 
 def raises(fn, what: str) -> None:
@@ -113,7 +116,24 @@ def main() -> int:
     assert abs(pp.estimate(thin, replace(prof, infill=0.05)).plastic_mm3 - pp.estimate(thin, replace(prof, infill=0.5)).plastic_mm3) < 1e-6
     assert pp.read_profile(stl) is None and pp.read_profile(tmp / "out.3mf") is None
 
-    print("meshmod ok: bracket STL edit + probes, inch/mirrored 3MF, round trip, broken-mesh refusal, estimates")
+    # 6. sketches turned to the installed orientation ----------------------------------
+    labels = {k: (Sketch("t", turn=k)._page_axis((1, 0)), Sketch("t", turn=k)._page_axis((0, 1))) for k in range(4)}
+    assert labels == {0: ("+X", "+Y"), 1: ("-Y", "+X"), 2: ("-X", "-Y"), 3: ("+Y", "-X")}, labels
+    sk = Sketch("t", turn=1)
+    sk.circle(10, 0, 1, "part")       # a point on +X must land straight up the page
+    sk.rect(0, -20, 4, 2, "part")     # a 4-wide rect on -Y must land to the right, 2 wide, 4 tall
+    (b_circle, b_rect) = [b for _, b in sk._items]
+    assert np.allclose(b_circle, (-1, 9, 1, 11)), b_circle
+    assert np.allclose(b_rect, (19, -2, 21, 2)), b_rect
+    raises(lambda: np.testing.assert_allclose(Sketch("t", turn=0)._t(10, 0), (0, 10)), "an unturned sketch moving a point")
+    tube = trimesh.creation.annulus(r_min=8, r_max=10, height=30)  # an unrelated shape, sliced and turned
+    sk = Sketch("t", axes=mm.section_axes("y"), turn=3, down=True)
+    mm.draw_section(sk, tube, "y")
+    xs0, ys0, xs1, ys1 = sk._bounds()
+    assert abs((xs1 - xs0) - 30) < 0.5 and abs((ys1 - ys0) - 20) < 0.5, "a turned tube slice is 30 wide, 20 tall"
+    assert "down</text>" in sk.to_svg()
+
+    print("meshmod ok: bracket STL edit + probes, inch/mirrored 3MF, round trip, broken-mesh refusal, estimates, turned sketches")
     return 0
 
 

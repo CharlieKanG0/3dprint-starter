@@ -11,6 +11,12 @@ a schematic is a few lines of positions and dimensions:
     sk.save("layout.svg")
 
 View it by opening the .svg in a browser (`open layout.svg` on macOS).
+
+Draw the way it is installed: when the part's own axes don't put "down" at the bottom of the page
+(a model that hangs on its side, a slice of a downloaded mesh), keep drawing in the part's own
+coordinates and pass `turn=` quarter turns counter-clockwise; everything is turned on the page, text
+stays upright and the axes indicator shows which part axis points where. Add `down=True` to draw a
+gravity arrow so the reader sees which way is down.
 Roles (colours) are defined in ROLES; add a role there rather than passing colours.
 """
 
@@ -33,10 +39,15 @@ ROLES: dict[str, tuple[str, str, float]] = {
 
 
 class Sketch:
-    def __init__(self, title: str, size: float = 300.0, axes: tuple[str, str] = ("X", "Y")):
+    def __init__(self, title: str, size: float = 300.0, axes: tuple[str, str] = ("X", "Y"), turn: int = 0,
+                 down: bool = False):
         """`size` = rough overall extent of the drawing in mm; it sets the text size.
-        `axes` names the horizontal and vertical axes of this view, e.g. ("X", "Z") for a side view."""
+        `axes` names the horizontal and vertical axes of this view, e.g. ("X", "Z") for a side view.
+        `turn` = quarter turns counter-clockwise applied to everything drawn (coordinates stay the part's
+        own), so the page shows the part the way it is installed. `down` draws a "down (gravity)" arrow."""
         self.axes = axes
+        self.turn = turn % 4
+        self.down = down
         self._notes: list[str] = []
         self.title = title
         self.fs = size / 55  # text height in mm
@@ -47,6 +58,19 @@ class Sketch:
     @staticmethod
     def _p(x: float, y: float) -> str:
         return f"{x:.2f},{-y:.2f}"
+
+    def _t(self, x: float, y: float) -> tuple[float, float]:
+        """Part coordinates -> page coordinates (applies `turn`)."""
+        x, y = float(x), float(y)
+        return ((x, y), (-y, x), (-x, -y), (y, -x))[self.turn]
+
+    def _page_axis(self, page_dir: tuple[int, int]) -> str:
+        """Name of the part axis (with sign) that points along a page direction, for the axes indicator."""
+        x, y = page_dir
+        for _ in range(self.turn):  # undo the turn: rotate clockwise
+            x, y = y, -x
+        name = self.axes[0] if x else self.axes[1]
+        return ("+" if (x or y) > 0 else "-") + name
 
     def _use(self, role: str) -> tuple[str, float]:
         if role not in ROLES:
@@ -68,6 +92,9 @@ class Sketch:
     # -- shapes -----------------------------------------------------------
     def rect(self, cx, cy, w, h, role, label=None, angle=0.0, dashed=False, r=0.0):
         col, op = self._use(role)
+        cx, cy = self._t(cx, cy)
+        if self.turn % 2:  # a quarter turn just swaps width and height
+            w, h = h, w
         rot = f' transform="rotate({-angle:.2f} {cx:.2f} {-cy:.2f})"' if angle else ""
         dash = ' stroke-dasharray="6 4"' if dashed else ""
         self._add(
@@ -77,7 +104,7 @@ class Sketch:
             if angle else (cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2),
         )
         if label:
-            self.text(cx, cy, label)
+            self._text(cx, cy, label)
 
     def slot(self, cx, cy, length, width, role, angle=0.0, label=None):
         """Rounded slot, `length` along its axis (angle 0 = along X)."""
@@ -85,18 +112,19 @@ class Sketch:
 
     def circle(self, cx, cy, r, role, label=None):
         col, op = self._use(role)
+        cx, cy = self._t(cx, cy)
         self._add(
             f'<circle cx="{cx:.2f}" cy="{-cy:.2f}" r="{r:.2f}" fill="{col}" fill-opacity="{op}" '
             f'stroke="{col}" stroke-width="0.8"/>',
             (cx - r, cy - r, cx + r, cy + r),
         )
         if label:
-            self.text(cx, cy - r - self.fs, label)
+            self._text(cx, cy - r - self.fs, label)
 
     def polygon(self, loops, role, label=None, dashed=False):
         """Filled outline from one or more closed point loops [(x, y), ...] (the even-odd rule, so a loop
         inside another is a hole). Draws a slice of an existing model: common/meshmod.py `draw_section`."""
-        loops = [[(float(x), float(y)) for x, y in loop] for loop in loops if len(loop) >= 3]
+        loops = [[self._t(x, y) for x, y in loop] for loop in loops if len(loop) >= 3]
         if not loops:
             return
         col, op = self._use(role)
@@ -109,11 +137,12 @@ class Sketch:
             (min(xs), min(ys), max(xs), max(ys)),
         )
         if label:
-            self.text((min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2, label)
+            self._text((min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2, label)
 
     def bar(self, a, b, width, role):
         """Thick line with round ends (an arm, a strap)."""
         col, op = self._use(role)
+        a, b = self._t(*a), self._t(*b)
         self._add(
             f'<line x1="{a[0]:.2f}" y1="{-a[1]:.2f}" x2="{b[0]:.2f}" y2="{-b[1]:.2f}" stroke="{col}" '
             f'stroke-opacity="{op}" stroke-width="{width:.2f}" stroke-linecap="round"/>',
@@ -123,6 +152,7 @@ class Sketch:
 
     def line(self, a, b, role="guide", dashed=True):
         col, _ = self._use(role)
+        a, b = self._t(*a), self._t(*b)
         dash = ' stroke-dasharray="8 5"' if dashed else ""
         self._add(
             f'<line x1="{a[0]:.2f}" y1="{-a[1]:.2f}" x2="{b[0]:.2f}" y2="{-b[1]:.2f}" '
@@ -131,6 +161,10 @@ class Sketch:
         )
 
     def text(self, x, y, s, anchor="middle", bold=False, size=None):
+        """Upright label at a point in part coordinates."""
+        self._text(*self._t(x, y), s, anchor=anchor, bold=bold, size=size)
+
+    def _text(self, x, y, s, anchor="middle", bold=False, size=None):
         fs = size or self.fs
         w = len(s) * fs * 0.55
         x0 = x - w / 2 if anchor == "middle" else (x if anchor == "start" else x - w)
@@ -144,6 +178,7 @@ class Sketch:
 
     def dim(self, a, b, text, offset=20.0):
         """Dimension from point a to b, drawn `offset` mm to the left of the a->b direction."""
+        a, b = self._t(*a), self._t(*b)
         dx, dy = b[0] - a[0], b[1] - a[1]
         length = math.hypot(dx, dy)
         ux, uy = dx / length, dy / length
@@ -176,11 +211,11 @@ class Sketch:
         horiz = abs(dx) >= abs(dy)
         tx, ty = (mx, my + sgn * self.fs * 1.1) if horiz else (mx + sgn * -1 * self.fs * 0.2, my)
         if horiz:
-            self.text(tx, ty, text, bold=True)
+            self._text(tx, ty, text, bold=True)
         else:
             # vertical dimension: label to the side of the line
             side = 1 if nx * sgn >= 0 else -1
-            self.text(mx + side * self.fs * 0.8, my, text, anchor="start" if side > 0 else "end", bold=True)
+            self._text(mx + side * self.fs * 0.8, my, text, anchor="start" if side > 0 else "end", bold=True)
 
     def notes(self, *lines: str) -> None:
         """Lines printed under the legend. Use them to state where each dimension came from
@@ -191,6 +226,8 @@ class Sketch:
     def to_svg(self) -> str:
         fs = self.fs
         x0, y0, x1, y1 = self._bounds()
+        if self.down:
+            x1 += fs * 4  # room for the gravity arrow and its label
         pad = fs * 3
         legend_h = fs * 1.7 * (len(self._roles_used) + len(self._notes) + 2)
         vx, vy = x0 - pad, -(y1 + pad + fs * 2.5)  # extra top room for the title
@@ -209,14 +246,23 @@ class Sketch:
         out += [svg for svg, _ in self._items]
 
         # axes indicator, bottom-right of the drawing
-        ax, ay, L = x1 - fs * 2, y0 - pad * 0.2, fs * 4
+        ax, ay, L = x1 - fs * 3, y0 - pad * 0.2, fs * 4  # room for a signed label like '-Y'
         out.append(
             f'<g stroke="#111" stroke-width="0.8" font-family="Helvetica, Arial, sans-serif" font-size="{fs:.2f}" fill="#111">'
             f'<line x1="{ax:.2f}" y1="{-ay:.2f}" x2="{ax + L:.2f}" y2="{-ay:.2f}"/>'
             f'<line x1="{ax:.2f}" y1="{-ay:.2f}" x2="{ax:.2f}" y2="{-(ay + L):.2f}"/>'
-            f'<text x="{ax + L + fs * 0.4:.2f}" y="{-ay + fs * 0.35:.2f}" stroke="none">+{self.axes[0]}</text>'
-            f'<text x="{ax - fs * 0.6:.2f}" y="{-(ay + L) - fs * 0.5:.2f}" stroke="none">+{self.axes[1]}</text></g>'
+            f'<text x="{ax + L + fs * 0.4:.2f}" y="{-ay + fs * 0.35:.2f}" stroke="none">{self._page_axis((1, 0))}</text>'
+            f'<text x="{ax - fs * 0.6:.2f}" y="{-(ay + L) - fs * 0.5:.2f}" stroke="none">{self._page_axis((0, 1))}</text></g>'
         )
+        if self.down:  # gravity arrow, top-right of the drawing
+            gx, gy0, gy1 = x1 - fs * 2.5, y1, y1 - fs * 5
+            out.append(
+                f'<g stroke="#b45309" fill="#b45309" font-family="Helvetica, Arial, sans-serif" font-size="{fs:.2f}">'
+                f'<line x1="{gx:.2f}" y1="{-gy0:.2f}" x2="{gx:.2f}" y2="{-gy1:.2f}" stroke-width="1.6"/>'
+                f'<polygon points="{gx:.2f},{-gy1 + fs:.2f} {gx - fs * 0.5:.2f},{-gy1 - fs * 0.2:.2f} '
+                f'{gx + fs * 0.5:.2f},{-gy1 - fs * 0.2:.2f}" stroke="none"/>'
+                f'<text x="{gx + fs * 0.6:.2f}" y="{-(gy0 + gy1) / 2:.2f}" stroke="none">down</text></g>'
+            )
 
         # legend, below the drawing
         ly = -(y0 - pad) + fs

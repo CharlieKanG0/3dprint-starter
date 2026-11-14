@@ -33,6 +33,10 @@ beside it and combined (`common/meshmod.py`). The sketch-first rule still applie
    from the mesh / datasheet / ASSUMED. Look at them yourself (`qlmanage -t -s 1200 -o <dir> x.svg`),
    open them for the user, recommend one, **wait for their letter**, then set `CONFIRMED`.
    A new mechanism (a different clamp or lock) goes back to this step.
+   **Draw it the way it is installed.** The file is in its print orientation; settle which way is down
+   in use (ask, or read the installed photo) before the first candidate, then set `TURN` in `layout.py`
+   so down is down on the page (`Sketch(turn=..., down=True)`). Sideways sketches mislabel lips as
+   "shelves" and hide which way the item falls out -- the user and you both misread them.
 6. **Edit:** fill in `<name>.py`: named parameters (each sourced), new geometry in build123d in the
    model's frame, `apply_changes(base, add=[...], cut=[...])`. Cuts also pass through additions.
    Fused additions must overlap the mesh by ~1 mm, never touch on a shared face (the same rule as

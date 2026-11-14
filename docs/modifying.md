@@ -53,7 +53,9 @@ It works like designing a part, with one extra picture:
    size, with its measurements. Nothing is guessed from the photos when the
    file itself has the answer.
 2. **Claude sketches options,** A, B, C, for your change drawn onto those
-   slices. You answer with a letter plus any changes. Nothing is built until you do.
+   slices, turned the way the part sits when it is in use, with a "down" arrow (a
+   download is saved the way it prints, which is often on its side). You answer
+   with a letter plus any changes. Nothing is built until you do.
 3. **Claude builds it,** checks it, and opens it in the viewer: **blue is the
    modified model, the transparent grey ghost is the original**, so you can see
    exactly what changed. (The mesh viewer loads its 3D engine from the internet, so
