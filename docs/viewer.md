@@ -1,5 +1,8 @@
 # Viewing a part
 
+_Technical reference for the 3D viewer and renders. New here? You don't need
+this page: the viewer opens by itself. See [Getting started](getting-started.md)._
+
 Every part script ends with `show_part(...)` from `common/output.py`, which
 puts the model on screen by itself (`common/viewer.py`), first match wins:
 

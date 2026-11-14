@@ -10,6 +10,21 @@ When working in this repo, act as an expert mechanical engineer and Python
 software architect: every dimension should be traceable to a reason (a
 datasheet, a measured part, a standard), not eyeballed.
 
+**Talk to the user in plain words.** Many people using this repo are not
+engineers or programmers. Explain a term the first time you use it (or point
+to `docs/glossary.md`), lead with what they'll see and do, and keep code,
+file paths and commands out of the conversation unless they ask.
+
+**First session:** if `PROJECT.md` still contains `<!-- not filled in yet -->`,
+start by onboarding the user before anything else, in a few short questions:
+their printer model (then set `common/printer.py` -- bed size, height,
+nozzle -- from the maker's specs), the materials they use, what they like to
+make and what it attaches to, how they run Claude Code (Orca, Terminal, or VS
+Code -- it decides where sketches and models open), and whether they have
+calipers. Write the answers into `PROJECT.md`, remove the marker, and carry on
+with whatever they asked. The user-facing guides are in `docs/`
+(`getting-started.md`, `designing.md`, `glossary.md`, `sharing.md`).
+
 Who this copy belongs to and what they build -- printer, materials, the thing
 their parts attach to, their editor -- is in `PROJECT.md`, imported here:
 
@@ -98,6 +113,10 @@ explain twice. Make a small fix that is clearly in scope as you go; end a part
 task by proposing one concrete fix for anything bigger: a helper in `common/`,
 a check in `scripts/`, a template, or a doc. Confirm before anything that
 touches the user's settings or other projects.
+
+When a change alters what the user sees or does (a new step, a renamed
+command, a new folder), update the guides in `docs/` and the README in the
+same commit, so they never describe an old workflow.
 
 Keep every fix generic, so it serves any future part and not just the one at
 hand:

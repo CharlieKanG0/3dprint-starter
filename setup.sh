@@ -87,13 +87,12 @@ venv/bin/python scripts/build_all.py
 
 cat <<'EOF'
 
-All set. Try:
+All set.
 
-  ./venv/bin/python scripts/view.py shower_mount     # example part in a browser tab
-  ./venv/bin/python scripts/render.py shower_mount   # PNGs in exports/
-  ./venv/bin/python scripts/new.py part my_part      # start your own
+Next: open this folder in Claude Code (in Orca, or run `claude` here) and say
+"Hi, I'm new, let's get set up." Claude asks about your printer and what you
+like to make, then you can describe your first part.
 
-First, set your printer's bed size in common/printer.py and describe your project in PROJECT.md.
-Using Claude Code? Open it in this folder and describe the part you want --
-CLAUDE.md teaches it the workflow.
+Step-by-step guide: docs/getting-started.md
+See the example design in 3D:  ./venv/bin/python scripts/view.py shower_mount
 EOF
