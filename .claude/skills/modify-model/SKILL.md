@@ -37,6 +37,9 @@ beside it and combined (`common/meshmod.py`). The sketch-first rule still applie
    in use (ask, or read the installed photo) before the first candidate, then set `TURN` in `layout.py`
    so down is down on the page (`Sketch(turn=..., down=True)`). Sideways sketches mislabel lips as
    "shelves" and hide which way the item falls out -- the user and you both misread them.
+   **Keep the original's outer size** (height, footprint) unless the user agrees to grow it: a download
+   is usually sized for a real space (a recess, a band of trim, a gap). If a candidate needs more room,
+   say how much and where on the sketch, and ask; otherwise trade range or features for it.
 6. **Edit:** fill in `<name>.py`: named parameters (each sourced), new geometry in build123d in the
    model's frame, `apply_changes(base, add=[...], cut=[...])`. Cuts also pass through additions.
    Fused additions must overlap the mesh by ~1 mm, never touch on a shared face (the same rule as
