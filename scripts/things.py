@@ -88,6 +88,8 @@ def main() -> int:
         print(f"wrote {INVENTORY.relative_to(ROOT)}")
         return 0
     if args == ["--check"]:
+        if not INVENTORY.exists() and not things():
+            return 0  # a fresh copy with nothing recorded yet
         if not INVENTORY.exists() or INVENTORY.read_text() != text:
             print("things/INVENTORY.md is out of date -- run: ./venv/bin/python scripts/things.py --write")
             return 1
