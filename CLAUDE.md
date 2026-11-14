@@ -147,6 +147,15 @@ separate venv.
 
 ## House rules
 
+- **Never fuse faces that coincide, and chamfer before adding bosses.** A boss
+  fused onto a plate with the *same radius* as the plate's rounded end (two
+  cylinder walls on one surface) gives an **invalid** solid: it still shows one
+  solid and a plausible volume, but its STEP re-imports as empty shells, so an
+  assembly "passes" every check against nothing. Make the boss a fraction
+  smaller (1 mm ledge), and chamfer the bed-facing outline on the plate alone
+  *before* stacking the boss on it (a boss extruded from the bed face splits
+  the outline into coincident arcs and the chamfer fails). `assert_single_solid`
+  now checks `is_valid` and `load_part` refuses a STEP with no solid.
 - **Build cutting tools outside an open `BuildPart` block if you'll
   `.locate()` them before subtracting.** Constructing a primitive (e.g.
   `Cylinder(...)`) as a bare statement *inside* an open `with BuildPart()`
@@ -200,8 +209,8 @@ part's script.
 ## Verify before calling a part done
 
 Every part script starts with `require_layout(__file__)` and ends with the
-checks in `common/verify.py`: `assert_single_solid` (catches the stray-blob
-bug above), `assert_bbox`, `assert_volume`, `assert_holes` (true axes), and
+checks in `common/verify.py`: `assert_single_solid` (one solid that OCC calls
+valid: catches the stray-blob bug above and broken booleans), `assert_bbox`, `assert_volume`, `assert_holes` (true axes), and
 `bed_fit(...)` printed so the print orientation is on record. Prefer
 extending that module over writing a check inline in one part.
 

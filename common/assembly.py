@@ -88,7 +88,11 @@ def load_part(part: str, step: str | None = None) -> Shape:
     if not path.exists():
         have = sorted(p.stem for p in out.glob("*.step"))
         raise FileNotFoundError(f"part {part} exported no {path.name}; it exports: {have}")
-    return import_step(str(path))
+    shape = import_step(str(path))
+    assert shape.solids(), (
+        f"part {part}: {path.name} re-imported with no solid. The part script's solid is probably invalid "
+        f"(is_valid=False), which STEP drops silently -- an assembly would then 'pass' every check against nothing")
+    return shape
 
 
 def place(shape: Shape, at=(0.0, 0.0, 0.0), rotate=(0.0, 0.0, 0.0), mirror: Plane | None = None) -> Shape:

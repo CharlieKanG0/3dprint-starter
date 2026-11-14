@@ -45,6 +45,15 @@ def require_layout(script: str, exempt: str | None = None) -> None:
     assert isinstance(confirmed, str) and confirmed.strip(), (
         f"{name}: the layout is not confirmed -- {step0}, then set CONFIRMED in layout.py to their choice "
         f"(letter + corrections + date). Don't fill it in yourself before they answer.")
+    # With lettered candidates on file (layout_a.svg, layout_b_side.svg, ...), the choice must name one of them.
+    import re
+
+    letters = sorted({m.group(1).upper() for f in folder.glob("layout_*.svg")
+                      if (m := re.match(r"layout_([a-z])(?:_|\.svg$)", f.name))})
+    if letters:
+        assert confirmed.strip()[:1].upper() in letters, (
+            f"{name}: CONFIRMED must start with the letter of a drawn candidate ({', '.join(letters)}), "
+            f"got {confirmed.strip()[:30]!r} -- {step0}.")
 
 
 @dataclass(frozen=True)
@@ -72,9 +81,17 @@ def cylinder_axes(part) -> list[CylinderAxis]:
 
 
 def assert_single_solid(part) -> None:
-    """Catches stray blobs and most broken booleans."""
+    """Catches stray blobs and broken booleans: exactly one solid, and OCC calls it valid.
+
+    The validity half matters: an invalid solid (e.g. a boss fused with the same radius as the
+    bar end under it, so the two cylinder walls coincide) still reports one solid and a plausible
+    volume, passes every other check, then re-imports from STEP as an empty shell with no volume.
+    """
     n = len(part.solids())
     assert n == 1, f"part is {n} solids, expected 1"
+    assert part.is_valid, (
+        "the solid is invalid (OCC is_valid=False): it would export to a STEP that re-imports with no solid. "
+        "Usual cause: coincident faces in a fuse -- offset one of them by a fraction of a mm or change the radius")
 
 
 def assert_bbox(part, size: tuple[float, float, float], tol: float = 0.01, on_bed: bool = True) -> None:
