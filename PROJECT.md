@@ -1,20 +1,16 @@
-# About this copy
+# About you and your projects
 
-This file is yours: it says who uses this repo and what for, and `CLAUDE.md`
-imports it, so the agent reads it every session. Merges from the starter never
-overwrite it. Keep personal facts here, not in the framework files.
+<!-- not filled in yet -->
 
-Fill in what applies and delete the rest:
+Claude fills this in with you on your first day. Open Claude Code in this
+folder and say *"Hi, I'm new, let's get set up."* It reads this file at the
+start of every conversation, so it remembers your setup. Edit it any time,
+or ask Claude to. Updates to the toolbox never overwrite it.
 
-- **What I build:** e.g. "mounts and brackets for a 4WD roof platform",
-  "desk and workshop organisers".
-- **What parts attach to:** rails, extrusions, tubes, walls -- with any
-  measurements you already have and where they came from.
-- **Printer:** set the numbers in `common/printer.py`; note quirks here
-  (e.g. "holes print 0.2 mm small", "enclosed, prints ASA well").
-- **Default material:** e.g. "PETG unless it lives outside, then ASA".
-- **Hardware on hand:** e.g. "M5/M6 SHCS, M4 brass heat-set inserts".
-- **Editor / viewer:** e.g. "Claude Code in Orca -- show models in an Orca
-  tab", "VS Code".
-- **Sharing:** whether this copy feeds workflow fixes back to the starter
-  (`scripts/upstream.py`), and who to ask before publishing.
+- **What I make:** e.g. "mounts and brackets for my 4WD", "desk and workshop organisers".
+- **What my parts attach to:** e.g. a roof rack, a pegboard, a bike frame.
+  (Measurements of these go in `things/`, so Claude never asks twice.)
+- **Printer:** e.g. "Bambu Lab P1S, enclosed" (bed size is set in `common/printer.py`).
+- **Materials I use:** e.g. "PETG for most things, ASA for anything outside".
+- **Tools and hardware I have:** e.g. "digital calipers, M3-M6 screws, brass inserts".
+- **How I run Claude Code:** Orca, Terminal, or VS Code.
