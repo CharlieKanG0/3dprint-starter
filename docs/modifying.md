@@ -92,6 +92,6 @@ A check is also run to prove it can fail, so a green tick means something.
 ./venv/bin/python scripts/check_meshmod.py                                        # self-test of the toolbox
 ```
 
-The helpers are `common/meshmod.py` (load, add, cut, check, export) and
+The helpers are `common/meshmod.py` (load, measure, add, cut, check, export) and
 `common/printplan.py` (the creator's settings and the estimate).
 New geometry is drawn in build123d and fused to the mesh with `manifold3d`.

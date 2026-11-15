@@ -46,6 +46,8 @@ def existing(axis: str, title: str, at: float | None = None) -> Sketch:
 
 # ---------------------------------------------------------------------------
 # What exists: slices through the downloaded mesh (measured from the file, not guessed)
+# Measure a wall, a gap or a hole with meshmod.line_spans(base, point, direction): where a line through
+# the model is inside material, e.g. [(-22.5, -18.5), (18.5, 22.5)] = a 37 mm bore with 4 mm walls.
 # ---------------------------------------------------------------------------
 
 for axis, view in (("z", "top"), ("y", "front"), ("x", "side")):

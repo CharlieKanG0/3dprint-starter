@@ -11,7 +11,8 @@ Builds its own test models (no downloads) and proves, with positive and negative
   - what write_3mf writes reads back unchanged;
   - the filament estimate behaves (fewer walls, less plastic; a solid wall ignores infill);
   - a sketch turned to its installed orientation (`Sketch(turn=...)`) puts things where they should be
-    and labels the axes right, for a mesh slice and a plain shape alike.
+    and labels the axes right, for a mesh slice and a plain shape alike;
+  - line_spans measures walls and gaps along a line, from outside or from inside the solid.
 Run by scripts/build_all.py, so a change to common/ can't silently break the workflow.
 """
 
@@ -140,7 +141,17 @@ def main() -> int:
     assert abs((xs1 - xs0) - 30) < 0.5 and abs((ys1 - ys0) - 20) < 0.5, "a turned tube slice is 30 wide, 20 tall"
     assert "down</text>" in sk.to_svg()
 
-    print("meshmod ok: bracket STL edit + probes, inch/mirrored 3MF, round trip, broken-mesh refusal, estimates, turned sketches")
+    # 7. measuring along a line -------------------------------------------------------
+    spans = mm.line_spans(tube, (0, 0, 0), (1, 0, 0))   # from the bore's centre (in air), across both walls
+    assert np.allclose(spans, [(-10, -8), (8, 10)], atol=0.05), spans
+    spans = mm.line_spans(tube, (9, 0, 0), (0, 0, 1))   # from inside the wall, along the tube's length
+    assert np.allclose(spans, [(-15, 15)], atol=1e-6), spans
+    assert mm.line_spans(tube, (50, 0, 0), (0, 1, 0)) == [], "a line that misses the part has no spans"
+    raises(lambda: np.testing.assert_allclose(mm.line_spans(tube, (0, 0, 0), (1, 0, 0))[1], (7, 10), atol=0.05),
+           "a wall measured 3 mm thick when it is 2")
+
+    print("meshmod ok: bracket STL edit + probes, inch/mirrored 3MF, round trip, broken-mesh refusal, estimates, "
+          "turned sketches, line spans")
     return 0
 
 

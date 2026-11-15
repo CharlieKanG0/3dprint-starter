@@ -318,6 +318,34 @@ def assert_solid_at(mesh, centre, size: float = 1.0) -> None:
     assert f > 0.99, f"expected material at {tuple(centre)}, found {f:.0%}"
 
 
+def line_spans(mesh: trimesh.Trimesh, point, direction) -> list[tuple[float, float]]:
+    """Where a straight line through `point` along `direction` is inside material, as (enter, leave)
+    distances from `point` (negative = behind it). The whole line is traced, so `point` may be inside
+    the solid. One call measures a wall's thickness, the gap between two walls, or where a hole is:
+
+        line_spans(m, (0, 0, 10), (1, 0, 0))  ->  [(-22.5, -18.5), (18.5, 22.5)]   # a 37 mm bore, 4 mm walls
+    """
+    p = np.asarray(point, float)
+    d = np.asarray(direction, float)
+    d = d / np.linalg.norm(d)
+    reach = float(np.linalg.norm(mesh.extents)) + float(np.linalg.norm(p - mesh.bounds.mean(axis=0))) + 1.0
+    hits, _, _ = mesh.ray.intersects_location([p - d * reach], [d], multiple_hits=True)
+    ts = sorted({round(float((h - p) @ d), 6) for h in hits})
+    if len(ts) < 2:
+        return []
+    mids = [p + d * (a + b) / 2 for a, b in zip(ts, ts[1:])]
+    inside = mesh.contains(mids)  # classify each stretch, so a ray grazing an edge cannot flip the pairing
+    spans: list[tuple[float, float]] = []
+    for (a, b), solid in zip(zip(ts, ts[1:]), inside):
+        if not solid:
+            continue
+        if spans and abs(spans[-1][1] - a) < 1e-6:
+            spans[-1] = (spans[-1][0], b)  # two stretches split by an inner face are one span
+        else:
+            spans.append((a, b))
+    return spans
+
+
 def mesh_bed_fit(mesh: trimesh.Trimesh, bed=printer.BED, margin: float = printer.BED_MARGIN):
     """Same answer as common.verify.bed_fit, for a mesh (footprint = convex hull of the XY outline)."""
     from common.verify import fit_points

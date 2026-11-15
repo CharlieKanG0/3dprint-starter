@@ -30,7 +30,7 @@ beside it and combined (`common/meshmod.py`). The sketch-first rule still applie
 5. **Sketch lettered candidates.** Run `layout.py`: it draws slices of the real mesh as the
    "existing" structure (`layout_existing_*.svg`). Draw each candidate change as its own lettered
    sketch on a slice (`layout_a.svg`, ...) at true position, dimensions sourced in `notes()`: measured
-   from the mesh / datasheet / ASSUMED. Look at them yourself (`qlmanage -t -s 1200 -o <dir> x.svg`),
+   from the mesh (`meshmod.line_spans` gives walls, gaps and holes along a line) / datasheet / ASSUMED. Look at them yourself (`qlmanage -t -s 1200 -o <dir> x.svg`),
    open them for the user, recommend one, **wait for their letter**, then set `CONFIRMED`.
    A new mechanism (a different clamp or lock) goes back to this step.
    **Re-check the route against the confirmed sketch** before modelling. The route was picked before
