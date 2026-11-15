@@ -8,7 +8,8 @@ render mode (PART_RENDER, see common/output.py), so its STEPs land in
 exports/<name>/ and the committed .step files are untouched. Every STEP it
 exports is rendered -- a multi-variant part gives one set of views per variant;
 an assembly gives one coloured scene. PARAM_<NAME>=x overrides pass through, so
-a sweep renders too. Prints one PNG path per view (exports/<step>_<view>.png);
+a sweep renders too. A part whose layout.py sets DOWN (the axis pointing down when installed) also
+gets an "installed" view, drawn the way up it is used. Prints one PNG path per view (exports/<step>_<view>.png);
 read them to check the shape against the reference photos. Needs `brew install f3d`.
 """
 
@@ -19,11 +20,14 @@ import subprocess
 import sys
 from pathlib import Path
 
+import numpy as np
+
 ROOT = Path(__file__).resolve().parents[1]
 EXPORTS = ROOT / "exports"
 sys.path.insert(0, str(ROOT))
 
 from common.project import find_script  # noqa: E402
+from common.verify import layout_down  # noqa: E402
 
 # build123d is Z-up. --camera-direction is where the camera looks; --camera-view-up
 # keeps the horizon level. Views are labelled by the side of the part they show.
@@ -33,6 +37,31 @@ VIEWS = {
     "front": ("0,1,0", "0,0,1"),    # looking along +Y (sees the -Y face)
     "right": ("-1,0,0", "0,0,1"),   # looking along -X (sees the +X face)
 }
+
+
+def installed_view(down: str) -> tuple[str, str]:
+    """The iso view turned so the part's installed "up" (opposite `down`, e.g. "-X") is up on screen:
+    (camera direction, view-up), both in the part's Z-up frame."""
+    axis = np.zeros(3)
+    axis["XYZ".index(down.lstrip("+-").upper())] = -1.0 if down.startswith("-") else 1.0
+    up, z = -axis, np.array([0.0, 0.0, 1.0])
+    if up @ z > 0.5:
+        rot = np.eye(3)
+    elif up @ z < -0.5:
+        rot = np.diag([1.0, -1.0, -1.0])           # upside down: half a turn about X
+    else:                                          # a quarter turn taking +Z onto `up`
+        k = np.cross(z, up)
+        kx = np.array([[0, -k[2], k[1]], [k[2], 0, -k[0]], [-k[1], k[0], 0]])
+        rot = np.eye(3) + kx + kx @ kx
+    fmt = lambda v: ",".join(f"{c + 0.0:g}" for c in v)  # noqa: E731  (+0.0: no "-0")
+    return fmt(rot @ np.array([-1.0, 1.0, -1.0])), fmt(up)
+
+
+def signed_axis(vec: str) -> str:
+    """"0,0,1" -> "+Z": f3d's --up wants an axis name."""
+    v = [float(c) for c in vec.split(",")]
+    i = max(range(3), key=lambda j: abs(v[j]))
+    return ("+" if v[i] > 0 else "-") + "XYZ"[i]
 
 
 def main() -> int:
@@ -63,8 +92,14 @@ def main() -> int:
         print(f"{script.name} exported nothing -- no export_part() / export_mesh() / Assembly.finish() call?", file=sys.stderr)
         return 1
 
+    views = args.views.split(",")
+    down = layout_down(script.parent)
+    if down:
+        VIEWS["installed"] = installed_view(down)
+        if args.views == ap.get_default("views"):
+            views.append("installed")
     for step in steps:
-        rc = render(step, args.views.split(","), args.size)
+        rc = render(step, views, args.size)
         if rc:
             return rc
     return 0
@@ -81,13 +116,14 @@ def render(step: Path, views: list[str], size: int) -> int:
     gltf = step.suffix == ".glb"
     for name in views:
         direction, up = VIEWS[name]
+        world_up = up if name == "installed" else "0,0,1"
         if gltf:
-            direction, up = y_up(direction), y_up(up)
+            direction, up, world_up = y_up(direction), y_up(up), y_up(world_up)
         png = EXPORTS / f"{step.stem}_{name}.png"
         cmd = [
             "f3d", str(step), "--output", str(png), "--no-config",
             "--resolution", f"{size},{size}",
-            "--up", "+Y" if gltf else "+Z", "--camera-direction", direction, "--camera-view-up", up,
+            "--up", signed_axis(world_up), "--camera-direction", direction, "--camera-view-up", up,
             "--axis", "--grid", "--verbose=quiet",  # "=": a separate "quiet" is read as a file
         ]
         # A STEP is drawn with its B-rep edges; a glTF is a triangle mesh, so --edges would

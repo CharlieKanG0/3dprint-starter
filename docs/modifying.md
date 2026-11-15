@@ -59,7 +59,8 @@ It works like designing a part, with one extra picture:
    file itself has the answer.
 2. **Claude sketches options,** A, B, C, for your change drawn onto those
    slices, turned the way the part sits when it is in use, with a "down" arrow (a
-   download is saved the way it prints, which is often on its side). You answer
+   download is saved the way it prints, which is often on its side). The
+   pictures of the finished model include one the right way up, too. You answer
    with a letter plus any changes. Nothing is built until you do.
 3. **Claude builds it,** checks it, and opens it in the viewer: **blue is the
    modified model, the transparent grey ghost is the original**, so you can see

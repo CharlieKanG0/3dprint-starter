@@ -10,7 +10,7 @@ Builds its own test models (no downloads) and proves, with positive and negative
   - a mesh with a gap is reported as unusable, refused by apply_changes, and fixed by repair;
   - what write_3mf writes reads back unchanged;
   - the filament estimate behaves (fewer walls, less plastic; a solid wall ignores infill);
-  - a sketch turned to its installed orientation (`Sketch(turn=...)`) puts things where they should be
+  - a sketch turned to its installed orientation (`Sketch(down=...)` / `turn=`) puts things where they should be
     and labels the axes right, for a mesh slice and a plain shape alike;
   - line_spans measures walls and gaps along a line, from outside or from inside the solid.
 Run by scripts/build_all.py, so a change to common/ can't silently break the workflow.
@@ -32,7 +32,7 @@ from build123d import Box, Cylinder, Pos, Rot, export_stl  # noqa: E402
 
 from common import meshmod as mm  # noqa: E402
 from common import printplan as pp  # noqa: E402
-from common.sketch import Sketch  # noqa: E402
+from common.sketch import Sketch, turn_for  # noqa: E402
 
 
 def raises(fn, what: str) -> None:
@@ -140,6 +140,13 @@ def main() -> int:
     xs0, ys0, xs1, ys1 = sk._bounds()
     assert abs((xs1 - xs0) - 30) < 0.5 and abs((ys1 - ys0) - 20) < 0.5, "a turned tube slice is 30 wide, 20 tall"
     assert "down</text>" in sk.to_svg()
+    # down= picks the turn per view: in the view, down points down the page; looking along it, nothing turns
+    assert (turn_for(("X", "Y"), "-X"), turn_for(("X", "Z"), "+Z"), turn_for(("Y", "Z"), "+Y")) == (1, 2, 3)
+    assert turn_for(("X", "Y"), "-Z") is None and Sketch("t", axes=("X", "Y"), down="-Z").turn == 0
+    for axes, d in ((("X", "Y"), "-X"), (("X", "Z"), "-Z"), (("Y", "Z"), "+Y")):
+        sk = Sketch("t", axes=axes, down=d)
+        assert sk.down and sk._page_axis((0, -1)) == ("-" if d[0] == "-" else "+") + d[1], (axes, d, sk.turn)
+    assert "down</text>" not in Sketch("t", down="").to_svg() and not Sketch("t", down="-Z").down
 
     # 7. measuring along a line -------------------------------------------------------
     spans = mm.line_spans(tube, (0, 0, 0), (1, 0, 0))   # from the bore's centre (in air), across both walls

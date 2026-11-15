@@ -32,16 +32,17 @@ HERE = Path(__file__).parent
 base = load_model(HERE / "source" / "<source_file>")  # mm, centred in X/Y, bottom at Z=0
 X, Y, Z = (float(v) for v in health(base).size)
 BIG = max(X, Y, Z)
-# A download is in the frame it PRINTS in, rarely the one it is USED in. Settle which way is down
-# when installed, then turn the views so it is down on the page: quarter turns counter-clockwise per
-# slice axis (e.g. {"z": 1} if the model's -X points down when installed). Coordinates stay the model's.
-TURN: dict[str, int] = {}
+# A download is in the frame it PRINTS in, rarely the one it is USED in. The model axis that points
+# DOWN when it is installed ("-X" if it hangs on its side), or "" when orientation means nothing (a box,
+# a re-slice). Every slice is then drawn with down at the bottom of the page, and scripts/render.py adds
+# an "installed" view. Coordinates stay the model's.
+DOWN = ""
 
 
 def existing(axis: str, title: str, at: float | None = None) -> Sketch:
     """A slice through the downloaded model, drawn as 'existing', with its overall size dimensioned.
     axis "z" = top view (slice at height `at`), "y" = front view, "x" = side view; default `at` = the middle."""
-    sk = Sketch(title, size=BIG * 1.4, axes=section_axes(axis), turn=TURN.get(axis, 0), down=axis in TURN)
+    sk = Sketch(title, size=BIG * 1.4, axes=section_axes(axis), down=DOWN)
     draw_section(sk, base, axis, at)
     lo, hi = base.bounds
     h, v = {"z": (0, 1), "y": (0, 2), "x": (1, 2)}[axis]

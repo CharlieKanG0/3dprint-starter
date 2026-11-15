@@ -43,6 +43,11 @@ def layout_open(folder) -> str | None:
     return _layout_str(folder, "OPEN")
 
 
+def layout_down(folder) -> str | None:
+    """The DOWN string in <folder>/layout.py: the part axis pointing down when installed ("-X"), or None."""
+    return _layout_str(folder, "DOWN")
+
+
 def layout_pending(folder) -> bool:
     """True while <folder>/layout.py has a CONFIRMED line that is still empty: sketches drawn, the
     user's letter not in yet. (A part from before the sketch rule, with no CONFIRMED line, is not pending.)"""

@@ -38,8 +38,9 @@ beside it and combined (`common/meshmod.py`). The sketch-first rule still applie
    change, a rebuild (`design-part`) fits better: clean booleans, editable features and a `.step`.
    Say so in one line and let the user choose. A change that keeps most of the download stays a mesh edit.
    **Draw it the way it is installed.** The file is in its print orientation; settle which way is down
-   in use (ask, or read the installed photo) before the first candidate, then set `TURN` in `layout.py`
-   so down is down on the page (`Sketch(turn=..., down=True)`). Sideways sketches mislabel lips as
+   in use (ask, or read the installed photo) before the first candidate, then set `DOWN` in `layout.py`
+   (the model axis that points down, "" if orientation means nothing) so down is down on the page and
+   `render.py` adds an "installed" view. Sideways sketches mislabel lips as
    "shelves" and hide which way the item falls out -- the user and you both misread them.
    **The outer size is a design input.** Each candidate states on its sketch whether, where and by how
    much it changes the original's outer size, so the user's letter covers it: a download is often sized

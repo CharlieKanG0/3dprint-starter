@@ -14,9 +14,11 @@ View it by opening the .svg in a browser (`open layout.svg` on macOS).
 
 Draw the way it is installed: when the part's own axes don't put "down" at the bottom of the page
 (a model that hangs on its side, a slice of a downloaded mesh), keep drawing in the part's own
-coordinates and pass `turn=` quarter turns counter-clockwise; everything is turned on the page, text
-stays upright and the axes indicator shows which part axis points where. Add `down=True` to draw a
-gravity arrow so the reader sees which way is down.
+coordinates and pass `down="-X"`: the part axis that points down when it is in use. A view that
+contains that axis is turned so it points down the page, with a gravity arrow; a view looking along
+it (a top view of something standing up) is left as is. Text stays upright and the axes indicator
+shows which part axis points where. (`turn=` quarter turns counter-clockwise and `down=True` for the
+arrow do the same by hand.)
 Roles (colours) are defined in ROLES; add a role there rather than passing colours.
 """
 
@@ -38,13 +40,30 @@ ROLES: dict[str, tuple[str, str, float]] = {
 }
 
 
+def turn_for(axes: tuple[str, str], down: str) -> int | None:
+    """Quarter turns counter-clockwise that put part axis `down` ("-X", "+z"...) at the bottom of the page
+    in a view whose horizontal and vertical axes are `axes`; None if the view looks along `down`."""
+    name = down.lstrip("+-").upper()
+    sign = -1 if down.startswith("-") else 1
+    names = [a.upper() for a in axes]
+    if name not in names:
+        return None
+    x, y = (sign, 0) if name == names[0] else (0, sign)
+    return next(k for k, v in enumerate(((x, y), (-y, x), (-x, -y), (y, -x))) if v == (0, -1))
+
+
 class Sketch:
     def __init__(self, title: str, size: float = 300.0, axes: tuple[str, str] = ("X", "Y"), turn: int = 0,
-                 down: bool = False):
+                 down: bool | str = False):
         """`size` = rough overall extent of the drawing in mm; it sets the text size.
         `axes` names the horizontal and vertical axes of this view, e.g. ("X", "Z") for a side view.
+        `down` = the part axis pointing down in use ("-X", "+Z"...): sets `turn` for this view and draws a
+        "down (gravity)" arrow, or does nothing if this view looks along that axis ("" = no orientation).
         `turn` = quarter turns counter-clockwise applied to everything drawn (coordinates stay the part's
-        own), so the page shows the part the way it is installed. `down` draws a "down (gravity)" arrow."""
+        own), so the page shows the part the way it is installed; `down=True` just draws the arrow."""
+        if isinstance(down, str):
+            t = turn_for(axes, down) if down else None
+            turn, down = (t, True) if t is not None else (turn, False)
         self.axes = axes
         self.turn = turn % 4
         self.down = down

@@ -33,6 +33,11 @@ CONFIRMED = ""
 # sees where the part stopped. Mirror it as "Waiting on:" in the part's parts/BACKLOG.md line.
 OPEN = "the user's letter"
 
+# How the part is used: the part axis that points DOWN when it is installed ("-X", "+Z"...), or "" when
+# orientation means nothing (a box, a spacer). Every Sketch(down=DOWN) is then drawn with down at the
+# bottom of the page, and scripts/render.py adds an "installed" view.
+DOWN = "-Z"
+
 # ---------------------------------------------------------------------------
 # Dimensions (mm) -- same names as the part script where they overlap
 # ---------------------------------------------------------------------------
@@ -43,7 +48,7 @@ OPEN = "the user's letter"
 # Candidate A -- top view.   Roles: existing, feature, part, cutout, hardware, carried, guide
 # ---------------------------------------------------------------------------
 
-a = Sketch("<Part> -- layout A, top view (confirm before modelling)", size=200)
+a = Sketch("<Part> -- layout A, top view (confirm before modelling)", size=200, down=DOWN)
 
 # TODO: draw what exists first, then the part, then the hardware, then dimensions:
 #   a.rect(cx, cy, w, h, "existing", label="...")      a.slot(cx, cy, length, width, "feature", angle=90)
@@ -56,4 +61,4 @@ a.notes(
 a.save(Path(__file__).parent / "layout.svg")
 
 # For a second candidate or a side view, make another Sketch and save it as
-# layout_b.svg / layout_side.svg (a side view: Sketch("...", axes=("X", "Z"))).
+# layout_b.svg / layout_side.svg (a side view: Sketch("...", axes=("X", "Z"), down=DOWN)).
