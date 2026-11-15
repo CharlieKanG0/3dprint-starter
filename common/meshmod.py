@@ -253,16 +253,39 @@ def _as_mesh(x) -> trimesh.Trimesh:
     return x if isinstance(x, trimesh.Trimesh) else to_mesh(x)
 
 
-def apply_changes(base: trimesh.Trimesh, add=(), cut=()) -> trimesh.Trimesh:
+def snap_to_faces(mesh, base: trimesh.Trimesh, tol: float = 0.01, min_area: float = 1.0) -> trimesh.Trimesh:
+    """A copy of `mesh` with every vertex lying within `tol` mm of one of `base`'s flat faces moved exactly
+    onto it. For an addition meant to continue a face of the original (a lengthened tab, a filled
+    hole, a widened base): the original's coordinates are rarely round numbers, and a face that is a
+    rounding error off leaves a hairline step or sliver in the union. Only flat faces of at least
+    `min_area` mm^2 count; keep `tol` far below any real step in the design."""
+    m = _as_mesh(mesh).copy()
+    if not len(base.facets):
+        return m
+    keep = base.facets_area >= min_area
+    normals, origins = base.facets_normal[keep], base.facets_origin[keep]
+    v = m.vertices.copy()
+    for n, o in zip(normals, origins):
+        d = (v - o) @ n
+        near = np.abs(d) < tol
+        v[near] -= np.outer(d[near], n)
+    m.vertices = v
+    return m
+
+
+def apply_changes(base: trimesh.Trimesh, add=(), cut=(), snap: float = 0.0) -> trimesh.Trimesh:
     """`(base + every item in add) - every item in cut`, as a closed mesh.
 
     Items may be meshes or build123d shapes (converted with `to_mesh`). Cuts also remove material
     from what was added, so a hole can pass through a new boss. The base must be usable
-    (`health(base).usable`; try `repair` first)."""
+    (`health(base).usable`; try `repair` first). `snap` > 0 first moves additions' vertices within
+    that many mm of a flat face of the base onto it (`snap_to_faces`), so a face meant to be flush is."""
     h = health(base)
     assert h.usable, "apply_changes: the base mesh is not usable -- " + "; ".join(h.problems())
     result = base
     adds = [_as_mesh(x) for x in add]
+    if snap > 0:
+        adds = [snap_to_faces(a, base, snap) for a in adds]
     cuts = [_as_mesh(x) for x in cut]
     if adds:
         result = trimesh.boolean.union([result, *adds], engine="manifold")

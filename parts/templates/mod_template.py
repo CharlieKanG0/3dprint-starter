@@ -73,7 +73,7 @@ assert_watertight(base)
 adds: list = []
 cuts: list = []
 
-result = apply_changes(base, add=adds, cut=cuts)
+result = apply_changes(base, add=adds, cut=cuts)  # snap=0.01 when an addition continues a face of the original flush
 
 # ---------------------------------------------------------------------------
 # Verify before exporting (the mesh counterparts of common/verify.py)

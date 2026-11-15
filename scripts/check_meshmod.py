@@ -13,7 +13,8 @@ Builds its own test models (no downloads) and proves, with positive and negative
   - a sketch turned to its installed orientation (`Sketch(down=...)` / `turn=`) puts things where they should be
     and labels the axes right, for a mesh slice and a plain shape alike;
   - line_spans measures walls and gaps along a line, from outside or from inside the solid;
-  - test_piece cuts a short closed slice where asked, from a mesh or a build123d shape.
+  - test_piece cuts a short closed slice where asked, from a mesh or a build123d shape;
+  - snap makes an addition meant to be flush with a face exactly flush (no hairline step).
 Run by scripts/build_all.py, so a change to common/ can't silently break the workflow.
 """
 
@@ -166,8 +167,22 @@ def main() -> int:
     assert np.allclose(side.extents, (4, 20, 10), atol=1e-6), side.extents
     raises(lambda: mm.test_piece(tube, "z", 5.0, at=100.0), "a test piece cut where there is no part")
 
+    # 9. snapping an addition flush with the original -----------------------------------
+    block = trimesh.creation.box((20, 20, 10.0))                  # top face at z = 5
+    tab = trimesh.creation.box((20, 10, 10.0 + 2e-4))             # a tab lengthening it, a rounding error too tall
+    tab.apply_translation((19, 0, 1e-4))                          # overlaps the block 1 mm, top at 5.0002
+
+    def top_levels(m):
+        return sorted({round(float(z), 6) for z in m.vertices[:, 2] if z > 4})
+    assert top_levels(mm.apply_changes(block, add=[tab], snap=0.001)) == [5.0], "snapped: one flat top"
+    raises(lambda: np.testing.assert_equal(top_levels(mm.apply_changes(block, add=[tab])), [5.0]),
+           "an unsnapped addition a rounding error proud of the face")
+    step = trimesh.creation.box((20, 10, 11.0))                    # a real 0.5 mm step must stay a step
+    step.apply_translation((19, 0, 0.5))
+    assert top_levels(mm.apply_changes(block, add=[step], snap=0.001)) == [5.0, 6.0]
+
     print("meshmod ok: bracket STL edit + probes, inch/mirrored 3MF, round trip, broken-mesh refusal, estimates, "
-          "turned sketches, line spans, test piece")
+          "turned sketches, line spans, test piece, snap")
     return 0
 
 
