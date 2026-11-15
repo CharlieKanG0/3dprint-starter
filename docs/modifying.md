@@ -45,6 +45,11 @@ in your slicer to get the real ones.
 | **Add or cut something:** a hole, a boss, a slot, a clamp | Claude **edits the model**. It keeps the creator's shape exactly and adds your change on top. |
 | **Change its proportions:** make it wider, rework how it works | Claude **rebuilds it** as a proper CAD design, using the downloaded one as a guide. Slower, and gives you full control. |
 
+The route is checked again once you pick a sketch. If the option you chose
+replaces most of the original, Claude says so and offers the rebuild instead:
+a rebuilt part is a CAD design you can keep changing, and it also gives you a
+`.step` file. An edit of a download only ever gives a `.3mf` (see below).
+
 ## If the model gets edited
 
 It works like designing a part, with one extra picture:

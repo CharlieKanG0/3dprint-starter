@@ -33,6 +33,10 @@ beside it and combined (`common/meshmod.py`). The sketch-first rule still applie
    from the mesh / datasheet / ASSUMED. Look at them yourself (`qlmanage -t -s 1200 -o <dir> x.svg`),
    open them for the user, recommend one, **wait for their letter**, then set `CONFIRMED`.
    A new mechanism (a different clamp or lock) goes back to this step.
+   **Re-check the route against the confirmed sketch** before modelling. The route was picked before
+   anyone knew the design; if the chosen change removes most of the original, or its proportions now
+   change, a rebuild (`design-part`) fits better: clean booleans, editable features and a `.step`.
+   Say so in one line and let the user choose. A change that keeps most of the download stays a mesh edit.
    **Draw it the way it is installed.** The file is in its print orientation; settle which way is down
    in use (ask, or read the installed photo) before the first candidate, then set `TURN` in `layout.py`
    so down is down on the page (`Sketch(turn=..., down=True)`). Sideways sketches mislabel lips as
