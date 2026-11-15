@@ -5,7 +5,7 @@ description: Use whenever the user wants to change, optimise or add to a model t
 
 # Modify a downloaded model: inspect, choose the route, sketch, edit, check
 
-Follow `CLAUDE.md` ("Modifying a downloaded model") and `docs/modifying.md`. A downloaded model is a
+This skill is the loop and its rules (`docs/modifying.md` is the user's side of it). A downloaded model is a
 **mesh**: build123d solids can't edit it, so the downloaded shape stays as is and your change is built
 beside it and combined (`common/meshmod.py`). The sketch-first rule still applies in full.
 
