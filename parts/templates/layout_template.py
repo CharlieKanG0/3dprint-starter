@@ -23,9 +23,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # repo root, for `
 from common.sketch import Sketch
 
 # The user's decision, filled in ONLY after they answer: the letter they picked, their
-# corrections, and the date. The part script refuses to build while this is empty
+# corrections, and the date. Later decisions are appended with their dates, so it reads as the
+# part's decision record. The part script refuses to build while this is empty
 # (common/verify.py require_layout).
 CONFIRMED = ""
+
+# What this part is waiting on, in one line, kept current until it is printed and fit-checked: the
+# user's letter, a measurement, a test print ("" when nothing). build_all prints it, so a new session
+# sees where the part stopped. Mirror it as "Waiting on:" in the part's parts/BACKLOG.md line.
+OPEN = "the user's letter"
 
 # ---------------------------------------------------------------------------
 # Dimensions (mm) -- same names as the part script where they overlap

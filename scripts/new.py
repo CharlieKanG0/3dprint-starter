@@ -63,7 +63,7 @@ def new_mod(name: str, source: str) -> int:
     backlog = ROOT / "parts/BACKLOG.md"
     text = backlog.read_text()
     if "## Backlog\n" in text:
-        line = f"- **{name}** -- TODO modify downloaded `{fname}`. `parts/{name}/`\n"
+        line = f"- **{name}** -- TODO modify downloaded `{fname}`. Waiting on: the user's letter. `parts/{name}/`\n"
         backlog.write_text(text.replace("## Backlog\n\n", f"## Backlog\n\n{line}", 1))
         print(f"added {name} to parts/BACKLOG.md")
     print(f"\nnext: run parts/{name}/layout.py (it draws the model's slices), then sketch lettered options for the change, "
@@ -109,7 +109,7 @@ def main() -> int:
     if kind == "part":
         backlog = ROOT / "parts/BACKLOG.md"
         text = backlog.read_text()
-        line = f"- **{name}** -- TODO one-line description. `parts/{name}/`\n"
+        line = f"- **{name}** -- TODO one-line description. Waiting on: the user's letter. `parts/{name}/`\n"
         if "## Backlog\n" in text:
             text = text.replace("## Backlog\n\n", f"## Backlog\n\n{line}", 1)
             backlog.write_text(text)

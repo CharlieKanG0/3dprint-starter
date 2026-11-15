@@ -14,20 +14,33 @@ from OCP.BRepAdaptor import BRepAdaptor_Surface
 from common import printer
 
 
-def layout_confirmed(folder) -> str | None:
-    """The CONFIRMED string recorded in <folder>/layout.py, or None if there is no layout.py or it is
-    still empty (the user has not picked a letter yet). Read without running layout.py."""
+def _layout_str(folder, name: str) -> str | None:
+    """A module-level string constant `name` in <folder>/layout.py, read without running it; None if
+    there is no layout.py, no such line, or the string is empty."""
     import ast
     from pathlib import Path
 
     layout = Path(folder) / "layout.py"
     if not layout.exists():
         return None
-    confirmed = None
+    value = None
     for node in ast.parse(layout.read_text()).body:
-        if isinstance(node, ast.Assign) and any(getattr(t, "id", None) == "CONFIRMED" for t in node.targets):
-            confirmed = node.value.value if isinstance(node.value, ast.Constant) else None
-    return confirmed if isinstance(confirmed, str) and confirmed.strip() else None
+        if isinstance(node, ast.Assign) and any(getattr(t, "id", None) == name for t in node.targets):
+            value = node.value.value if isinstance(node.value, ast.Constant) else None
+    return value.strip() if isinstance(value, str) and value.strip() else None
+
+
+def layout_confirmed(folder) -> str | None:
+    """The CONFIRMED string recorded in <folder>/layout.py, or None if there is no layout.py or it is
+    still empty (the user has not picked a letter yet). Read without running layout.py."""
+    return _layout_str(folder, "CONFIRMED")
+
+
+def layout_open(folder) -> str | None:
+    """The OPEN string in <folder>/layout.py: what the part is waiting on (a letter, a measurement, a
+    test print), or None when nothing is. build_all prints it, so a part picked up in a new session
+    says where it stopped."""
+    return _layout_str(folder, "OPEN")
 
 
 def layout_pending(folder) -> bool:

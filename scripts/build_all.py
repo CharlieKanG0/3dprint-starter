@@ -11,7 +11,8 @@ and committed .step files are never rewritten. Run by the pre-commit hook
 (.githooks/pre-commit) with --staged, so a change to common/ can't silently break
 a part while a half-finished part elsewhere can't block an unrelated commit. A part whose layout.py
 is still waiting for the user's letter (CONFIRMED empty) is listed as "wait", not failed:
-it refuses to build by design, and that must not block a fix to the shared code.
+it refuses to build by design, and that must not block a fix to the shared code. A part whose
+layout.py sets OPEN (what it is waiting on) has that printed beside its result.
 """
 
 import os
@@ -23,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from common.project import all_scripts, kind_of  # noqa: E402
-from common.verify import layout_pending  # noqa: E402
+from common.verify import layout_open, layout_pending  # noqa: E402
 
 
 def discover(names: list[str]) -> list[Path]:
@@ -77,14 +78,16 @@ def main() -> int:
             print("no staged part or shared-code changes; nothing to check")
             return 0
     for script in discover(args):
+        open_ = layout_open(script.parent)
         if layout_pending(script.parent):
-            print(f"wait  {script.stem}  (layout not confirmed yet: waiting for the user's letter)")
+            why = open_ or "the user's letter (layout not confirmed)"
+            print(f"wait  {script.stem}  (waiting on: {why})")
             continue
         result = subprocess.run(
             [sys.executable, str(script)], env=env, capture_output=True, text=True, timeout=600
         )
         ok = result.returncode == 0
-        print(f"{'ok  ' if ok else 'FAIL'}  {script.stem}")
+        print(f"{'ok  ' if ok else 'FAIL'}  {script.stem}" + (f"  (waiting on: {open_})" if open_ else ""))
         if not ok:
             failed.append(script.stem)
             print("\n".join(("      " + line) for line in (result.stderr or result.stdout).strip().splitlines()[-12:]))

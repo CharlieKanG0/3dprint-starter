@@ -83,6 +83,9 @@ arm be thicker?"*
 - **Report fits with numbers when you can:** *"loose by about 1 mm"*, *"the
   bolt won't go through"*, *"snaps on but too tight to remove"*.
 - When something fits, say so. Claude marks the part as done.
+- **Coming back another day?** Each unfinished part notes what it is waiting
+  on (your pick of a sketch, a measurement, a test print). Ask *"where did we
+  leave the shovel mount?"* and Claude starts from there.
 
 ## Measurements Claude remembers
 

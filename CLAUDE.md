@@ -285,7 +285,10 @@ spring-loaded click joints.
 
 Flat list at `parts/BACKLOG.md`, not a ticket tracker: most work here is a
 single bounded part (parametrize, build, verify, print). Add an idea as a
-line, move it to "Done" once printed and fit-checked.
+line, move it to "Done" once printed and fit-checked. A part left part-way
+says what it is waiting on (the user's letter, a measurement, a test print)
+in two places, kept current: `OPEN` in its `layout.py` (build_all prints it)
+and "Waiting on:" in its backlog line. Picking a part back up starts there.
 
 ## Worked example
 
