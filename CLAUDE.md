@@ -20,8 +20,8 @@ start by onboarding the user before anything else, in a few short questions:
 their printer model (then set `common/printer.py` -- bed size, height,
 nozzle -- from the maker's specs), the materials they use, what they like to
 make and what it attaches to, how they run Claude Code (Orca, Terminal, or VS
-Code -- it decides where sketches and models open), and whether they have
-calipers. Write the answers into `PROJECT.md`, remove the marker, and carry on
+Code -- it decides where sketches and models open), which slicer they use
+(finished files are opened in it), and whether they have calipers. Write the answers into `PROJECT.md`, remove the marker, and carry on
 with whatever they asked. The user-facing guides are in `docs/`
 (`getting-started.md`, `designing.md`, `modifying.md`, `glossary.md`, `sharing.md`).
 

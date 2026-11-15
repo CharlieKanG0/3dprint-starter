@@ -65,9 +65,18 @@ It works like designing a part, with one extra picture:
    modified model, the transparent grey ghost is the original**, so you can see
    exactly what changed. (The mesh viewer loads its 3D engine from the internet, so
    it needs a connection.)
-4. **You get a `.3mf`** with the geometry only. Open it in your slicer and pick
-   your own printer, plastic and settings: nothing from the creator's profile
-   comes along.
+4. **You get a `.3mf`** with the geometry only. Claude opens it in your slicer
+   (and shows you the file); pick your own printer, plastic and settings:
+   nothing from the creator's profile comes along.
+
+**Why a `.3mf` and not a `.step`?** A download is a mesh: a skin of
+triangles, with no record of how it was drawn. An edit keeps that skin and
+adds to it, so the result is a mesh too, and `.3mf` is the file format for
+meshes. A `.step` is a CAD design with real surfaces and measurements you can
+change later; writing a mesh into one doesn't turn it into a design. If you
+want a `.step` (to keep changing the part in a CAD program), ask for a
+**rebuild**: Claude redraws the part as a design, using the download as a
+guide.
 
 Claude's checks: the result is still one closed solid, the new hole really is open
 and the new boss really is solid, the size is right, and it fits your bed.

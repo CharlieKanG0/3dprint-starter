@@ -55,6 +55,9 @@ beside it and combined (`common/meshmod.py`). The sketch-first rule still applie
 8. **Report:** what changed (numbers), every ASSUMED value, the checks, what to print first to test
    the fit, hardware to buy, and the slicer settings for their printer and material. The `.3mf` is
    geometry only: they pick their own profile. Licence caveat if the file's licence is restrictive.
+   **Hand it to their slicer:** open the `.3mf` in the slicer `PROJECT.md` names (macOS:
+   `open -a "<Slicer>" <file>`) and show it in the file browser (`open -R <file>`), so they never
+   hunt for a path. Not named yet? Ask once and write it into `PROJECT.md`.
 
 Fix friction you meet in the helpers themselves, generically (`common/meshmod.py`,
 `scripts/inspect_model.py`, the mod templates) -- never inside one part. `scripts/check_meshmod.py` is

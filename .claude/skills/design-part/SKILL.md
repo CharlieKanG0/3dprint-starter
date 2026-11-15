@@ -40,6 +40,9 @@ Follow `CLAUDE.md` "Workflow". This is the order, with the steps people skip in 
    hardware to buy, what to print first to test -- and, if the user described
    a new real object future parts will likely fit, offer to save it to
    `things/` (CLAUDE.md), unless you already asked.
+   **Hand it to their slicer:** open the `.step` in the slicer `PROJECT.md` names (macOS:
+   `open -a "<Slicer>" <file>`) and show it in the file browser (`open -R <file>`), so they never
+   hunt for a path. Not named yet? Ask once and write it into `PROJECT.md`.
 
 A new mechanism halfway through (a different joint, a lock, a way to fold)
 goes back to step 3 with lettered options for it.

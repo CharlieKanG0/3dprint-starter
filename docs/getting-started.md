@@ -84,8 +84,9 @@ shower mount example."*
 
 Your print files are in `parts/<your part>/`, ending in **`.step`**:
 
-1. Open your slicer (Bambu Studio, OrcaSlicer, PrusaSlicer...).
-2. Drag the `.step` file in. It's already the right way up for printing.
+1. Claude opens it in your slicer (Bambu Studio, OrcaSlicer, PrusaSlicer...)
+   when the part is done. To do it yourself, drag the `.step` file in.
+2. It's already the right way up for printing.
 3. Choose your material and print as you normally would. Claude's summary
    says if a piece needs anything special.
 
