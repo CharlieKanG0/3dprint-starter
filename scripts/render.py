@@ -47,8 +47,10 @@ def main() -> int:
         return 2
     script = find_script(args.part)
     out_dir = EXPORTS / args.part
-    if out_dir.exists():
-        shutil.rmtree(out_dir)  # only this run's STEPs get rendered
+    # only this run's models get rendered: clear the old ones, but keep the rest of the folder
+    # (a plain run's viewer page, view.html, lives there too)
+    for old in [*out_dir.glob("*.step"), *out_dir.glob("*.glb"), *out_dir.glob("*.stl")] if out_dir.exists() else []:
+        old.unlink()
 
     env = {**os.environ, "PART_RENDER": str(out_dir)}
     env.pop("PART_CHECK", None)
@@ -86,7 +88,7 @@ def render(step: Path, views: list[str], size: int) -> int:
             "f3d", str(step), "--output", str(png), "--no-config",
             "--resolution", f"{size},{size}",
             "--up", "+Y" if gltf else "+Z", "--camera-direction", direction, "--camera-view-up", up,
-            "--axis", "--grid", "--verbose", "quiet",
+            "--axis", "--grid", "--verbose=quiet",  # "=": a separate "quiet" is read as a file
         ]
         # A STEP is drawn with its B-rep edges; a glTF is a triangle mesh, so --edges would
         # draw every triangle. --blending honours its alpha (see-through reference geometry).
