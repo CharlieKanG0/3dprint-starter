@@ -5,6 +5,7 @@
     ./venv/bin/python scripts/upstream.py pull     # merge the starter's main into your current branch
     ./venv/bin/python scripts/upstream.py setup <url>   # one time, in a repo that started from the starter
     ./venv/bin/python scripts/upstream.py mark          # set the sync point to HEAD (after connecting histories)
+    ./venv/bin/python scripts/upstream.py check-commit  # pre-commit: refuse a commit that mixes the two kinds
 
 The split: FRAMEWORK paths (below) are the shared workflow -- helpers, scripts, templates,
 docs, CLAUDE.md, the worked example. Everything else is YOURS -- your parts, assemblies,
@@ -18,7 +19,8 @@ replays them onto the starter's main -- a framework-only commit as it is, a comm
 mixes framework files with your own with ONLY its framework files (same message and
 author; your files are left out and stay here). Your-only commits are skipped. Keeping
 fixes and parts in separate commits is still the habit to aim for. `.githooks/pre-push`
-runs `check-push` so a plain `git push` to the starter can't leak your parts either.
+runs `check-push` so a plain `git push` to the starter can't leak your parts either, and
+`.githooks/pre-commit` runs `check-commit` so a mixed commit is caught when it is made.
 
 Config (git config, set by `setup`): cad.upstream = remote name (default "upstream"),
 cad.upstream-since = commit after which local commits are candidates for publishing.
@@ -218,6 +220,24 @@ def cmd_check_push(remote_name: str) -> int:
     return 0
 
 
+def cmd_check_commit() -> int:
+    """pre-commit hook: refuse a commit whose staged files mix framework and your own (a merge is exempt)."""
+    if (Path(git("rev-parse", "--git-dir")).resolve() / "MERGE_HEAD").exists():
+        return 0
+    staged = [f for f in git("diff", "--cached", "--name-only").splitlines() if f]
+    fw = [f for f in staged if is_framework(f)]
+    yours = [f for f in staged if not is_framework(f)]
+    if fw and yours:
+        print("pre-commit: this commit mixes workflow (framework) files with your own -- commit them separately:",
+              file=sys.stderr)
+        print("   framework:", ", ".join(fw[:8]) + (" ..." if len(fw) > 8 else ""), file=sys.stderr)
+        print("   yours:    ", ", ".join(yours[:8]) + (" ..." if len(yours) > 8 else ""), file=sys.stderr)
+        print("   e.g. `git restore --staged <your files>`, commit, then add them back and commit again.",
+              file=sys.stderr)
+        return 1
+    return 0
+
+
 def cmd_setup(url: str) -> int:
     name = config("cad.upstream", "upstream")
     if name in git("remote").split():
@@ -254,6 +274,8 @@ def main() -> int:
         return cmd_push()
     if cmd == "check-push":
         return cmd_check_push(rest[0] if rest else "")
+    if cmd == "check-commit":
+        return cmd_check_commit()
     if cmd == "mark":
         return cmd_mark()
     if cmd == "setup" and rest:

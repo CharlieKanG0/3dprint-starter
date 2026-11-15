@@ -165,9 +165,9 @@ inside a shared folder (a helper for your own hardware in `common/`, say) is
 listed in `.upstream-private` so it stays yours too.
 
 - Never mix the two in one commit: a workflow fix is its own commit, a part
-  is its own commit. If one slips, `scripts/upstream.py push` publishes only
-  its framework files and leaves yours here -- but separate commits keep the
-  published history readable.
+  is its own commit. The pre-commit hook refuses a mixed commit
+  (`upstream.py check-commit`); if one slips past it, `scripts/upstream.py push`
+  publishes only its framework files and leaves yours here.
 - Personal facts (your printer, material, vehicle, editor) go in `PROJECT.md`
   or `common/printer.py`, never into framework files.
 - `./venv/bin/python scripts/upstream.py status` shows workflow commits not

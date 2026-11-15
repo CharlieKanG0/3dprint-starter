@@ -1,5 +1,7 @@
 #!/bin/sh
-# Rebuild the parts this commit touches (all of them if common/ or scripts/ changed)
-# headless; a part whose assertions fail blocks the commit.
+# 1. Refuse a commit that mixes workflow (framework) files with your own (scripts/upstream.py lists which is which).
+# 2. Rebuild the parts this commit touches (all of them if common/ or scripts/ changed)
+#    headless; a part whose assertions fail blocks the commit.
 # Enabled by: git config core.hooksPath .githooks   (bypass once: git commit --no-verify)
+./venv/bin/python scripts/upstream.py check-commit || exit 1
 exec ./venv/bin/python scripts/build_all.py --staged

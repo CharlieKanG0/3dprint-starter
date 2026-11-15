@@ -55,7 +55,8 @@ to everyone:
   blocks any push that would include your own files.
 
 Claude keeps toolbox improvements and designs separate as it works, and asks
-before sharing anything.
+before sharing anything. A second safety check refuses to save (commit) a
+change that mixes the two, so they always land as separate steps.
 
 ## Your own files inside the toolbox folders
 
