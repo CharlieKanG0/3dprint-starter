@@ -318,6 +318,27 @@ def assert_solid_at(mesh, centre, size: float = 1.0) -> None:
     assert f > 0.99, f"expected material at {tuple(centre)}, found {f:.0%}"
 
 
+def test_piece(mesh, axis: str = "z", length: float = 10.0, at: float | None = None) -> trimesh.Trimesh:
+    """A short slice of `mesh` to print and try before the full part: everything within `length` mm along
+    `axis` around coordinate `at` (default: the middle of the part). Use it where the fit is the question
+    -- a clamp on a tube, a snap, a peg in a hole -- and cut it where that feature is. Takes a mesh or a
+    build123d shape; returns a closed mesh, possibly in several pieces (check the count you expect)."""
+    m = _as_mesh(mesh)
+    k = "xyz".index(axis)
+    if at is None:
+        at = float(m.bounds[:, k].mean())
+    size = m.extents * 2 + 2.0
+    size[k] = length
+    centre = m.bounds.mean(axis=0)
+    centre[k] = at
+    slab = trimesh.creation.box(extents=size)
+    slab.apply_translation(centre)
+    piece = trimesh.boolean.intersection([m, slab], engine="manifold")
+    assert len(piece.faces), f"no material within {length} mm of {axis}={at:g}"
+    assert_watertight(piece)
+    return piece
+
+
 def line_spans(mesh: trimesh.Trimesh, point, direction) -> list[tuple[float, float]]:
     """Where a straight line through `point` along `direction` is inside material, as (enter, leave)
     distances from `point` (negative = behind it). The whole line is traced, so `point` may be inside

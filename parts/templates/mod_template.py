@@ -33,6 +33,7 @@ from common.meshmod import (  # noqa: F401
     load_model,
     mesh_bed_fit,
     repair,
+    test_piece,
     to_mesh,
 )
 from common.output import export_mesh, show_mesh
@@ -94,5 +95,7 @@ print(mesh_bed_fit(result).summary())
 # ---------------------------------------------------------------------------
 
 export_mesh(result, HERE / "<part_name>.3mf")
+# Where a fit is the question (a clamp, a snap, a peg), also export a short slice to print and try first:
+# export_mesh(test_piece(result, "z", 10.0, at=<where the fitting feature is>), HERE / "<part_name>_test_piece.3mf")
 print(f"<part_name>  |  volume={result.volume:.0f} mm^3 (was {base.volume:.0f})  |  {len(result.faces):,} triangles")
 show_mesh(result, ghost=base)

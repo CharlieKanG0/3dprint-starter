@@ -12,7 +12,8 @@ Builds its own test models (no downloads) and proves, with positive and negative
   - the filament estimate behaves (fewer walls, less plastic; a solid wall ignores infill);
   - a sketch turned to its installed orientation (`Sketch(down=...)` / `turn=`) puts things where they should be
     and labels the axes right, for a mesh slice and a plain shape alike;
-  - line_spans measures walls and gaps along a line, from outside or from inside the solid.
+  - line_spans measures walls and gaps along a line, from outside or from inside the solid;
+  - test_piece cuts a short closed slice where asked, from a mesh or a build123d shape.
 Run by scripts/build_all.py, so a change to common/ can't silently break the workflow.
 """
 
@@ -157,8 +158,16 @@ def main() -> int:
     raises(lambda: np.testing.assert_allclose(mm.line_spans(tube, (0, 0, 0), (1, 0, 0))[1], (7, 10), atol=0.05),
            "a wall measured 3 mm thick when it is 2")
 
+    # 8. a test piece -------------------------------------------------------------------
+    piece = mm.test_piece(tube, "z", 6.0, at=-12.0)            # 6 mm of the tube, near its bottom end
+    assert np.allclose(piece.bounds[:, 2], (-15, -9), atol=1e-6), piece.bounds
+    assert abs(piece.volume - tube.volume * 6 / 30) < 1.0 and len(piece.split(only_watertight=False)) == 1
+    side = mm.test_piece(Box(40, 20, 10), "x", 4.0)              # a build123d shape, default: the middle
+    assert np.allclose(side.extents, (4, 20, 10), atol=1e-6), side.extents
+    raises(lambda: mm.test_piece(tube, "z", 5.0, at=100.0), "a test piece cut where there is no part")
+
     print("meshmod ok: bracket STL edit + probes, inch/mirrored 3MF, round trip, broken-mesh refusal, estimates, "
-          "turned sketches, line spans")
+          "turned sketches, line spans, test piece")
     return 0
 
 

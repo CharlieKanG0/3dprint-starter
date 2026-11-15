@@ -89,6 +89,9 @@ A check is also run to prove it can fail, so a green tick means something.
   Claude pick sizes. Measure the real thing if you can.
 - **Name the material.** It changes wall thickness, how much flex a clamp
   can have, and the weight estimate.
+- **Try the fit first.** If your change has to fit something (a clamp on a
+  pole, a snap), ask for a **test piece**: a thin slice through that spot,
+  quick to print.
 - **Keep the original download.** Claude copies it into your part's folder, so
   the change can be redone if you change your mind.
 

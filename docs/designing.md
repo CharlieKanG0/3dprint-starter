@@ -77,7 +77,9 @@ arm be thicker?"*
 
 - **Print the critical piece first,** the one that has to fit something
   (a clip, a joint, a pocket for a nut). It's quicker than printing the whole
-  thing and finding one bit doesn't fit.
+  thing and finding one bit doesn't fit. When the fit is in the middle of a
+  big part, ask Claude for a **test piece**: a thin slice through just that
+  spot, printed in minutes.
 - Claude's summary lists **hardware to buy** (screws, bolts, nuts, springs,
   brass inserts) with sizes.
 - **Report fits with numbers when you can:** *"loose by about 1 mm"*, *"the

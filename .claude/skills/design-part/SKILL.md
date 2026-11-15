@@ -38,7 +38,8 @@ Follow `CLAUDE.md` "Workflow". This is the order, with the steps people skip in 
    it, compare with the photos, and render (`scripts/render.py <name>`) on a
    first build.
 9. **Report**: what was built, what the checks cover, every ASSUMED value,
-   hardware to buy, what to print first to test -- and, if the user described
+   hardware to buy, what to print first to test (a short slice through a fitting
+   feature: `export_mesh(meshmod.test_piece(part, ...))`) -- and, if the user described
    a new real object future parts will likely fit, offer to save it to
    `things/` (CLAUDE.md), unless you already asked.
    **Hand it to their slicer:** open the `.step` in the slicer `PROJECT.md` names (macOS:

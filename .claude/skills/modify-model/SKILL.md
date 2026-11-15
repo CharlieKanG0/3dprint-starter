@@ -54,7 +54,7 @@ beside it and combined (`common/meshmod.py`). The sketch-first rule still applie
    plain run (the viewer shows blue = modified, grey ghost = original), a `scripts/render.py <name>`,
    and read the pictures before reporting.
 8. **Report:** what changed (numbers), every ASSUMED value, the checks, what to print first to test
-   the fit, hardware to buy, and the slicer settings for their printer and material. The `.3mf` is
+   the fit (where fit is the question, export a short `test_piece` through that feature), hardware to buy, and the slicer settings for their printer and material. The `.3mf` is
    geometry only: they pick their own profile. Licence caveat if the file's licence is restrictive.
    **Hand it to their slicer:** open the `.3mf` in the slicer `PROJECT.md` names (macOS:
    `open -a "<Slicer>" <file>`) and show it in the file browser (`open -R <file>`), so they never
