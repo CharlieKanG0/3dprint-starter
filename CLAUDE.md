@@ -161,7 +161,7 @@ listed in `.upstream-private` so it stays yours too.
   commits, as a pull request. With no `origin` yet, the work exists on one
   computer: offer `upstream.py private` once.
 - **The loop: branch -> your main -> `backup` -> `push` (pull request) ->
-  owner merges -> `pull` -> `backup`.** Merge a finished branch (a part or a
+  owner merges -> `pull` -> `backup`** (diagram in `docs/sharing.md`). Merge a finished branch (a part or a
   fix) into main and run `upstream.py backup` straight away: it is private,
   so back up without asking. `push` shares only what is on main, as a pull
   request on the starter (one `share` branch, updated on each push), never

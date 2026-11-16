@@ -21,6 +21,34 @@ to do any of it: *"get the latest toolbox updates"*, *"back up my designs"*.
 | Your **private** GitHub repo (`origin`) | everything: designs, settings, unfinished work | after each finished change: *"back up my designs"* |
 | The shared toolbox (`upstream`) | toolbox improvements only | when you choose to share one, as a pull request |
 
+How a change travels:
+
+```text
+          YOUR COMPUTER                               GITHUB
+
+  1. work on a branch
+     (a design, or a toolbox fix)
+              │
+              │ merge when finished
+              ▼                   2. backup            ┌────────────────────────┐
+         your main  ─────────────────────────────────▶ │ origin                 │
+          │     ▲                 everything           │ your PRIVATE repo      │
+          │     │                                      └────────────────────────┘
+          │     │                                      ┌────────────────────────┐
+          │     │                 5. pull              │ upstream               │
+          │     └───────────────────────────────────── │ the PUBLIC toolbox     │
+          │                                            │                        │
+          │                       3. push              │  "share" branch        │
+          └──────────────────────────────────────────▶ │    │ pull request      │
+                                  toolbox files only   │    ▼ 4. owner merges   │
+                                                       │  main                  │
+                                                       └────────────────────────┘
+  6. backup again: the pull added to your main
+```
+
+Steps 3 to 5 happen only when a toolbox improvement is worth sharing; a new
+design goes 1 → 2 and stops there.
+
 ## Backing up your designs
 
 Until you make a backup, your designs live in one folder on one computer.
