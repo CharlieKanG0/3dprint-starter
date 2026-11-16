@@ -21,7 +21,8 @@ their printer model (then set `common/printer.py` -- bed size, height,
 nozzle -- from the maker's specs), the materials they use, what they like to
 make and what it attaches to, how they run Claude Code (Orca, Terminal, or VS
 Code -- it decides where sketches and models open), which slicer they use
-(finished files are opened in it), and whether they have calipers. Write the answers into `PROJECT.md`, remove the marker, and carry on
+(finished files are opened in it), whether they have calipers, and whether
+to back their work up to a private GitHub repo (`upstream.py private`). Write the answers into `PROJECT.md`, remove the marker, and carry on
 with whatever they asked. The user-facing guides are in `docs/`
 (`getting-started.md`, `designing.md`, `modifying.md`, `glossary.md`, `sharing.md`).
 
@@ -146,7 +147,8 @@ https://github.com/CharlieKanG0/3dprint-starter. The **framework** -- `common/`,
 `scripts/`, the templates, `docs/`, `CLAUDE.md`, the skill, the worked example;
 the exact list is in `scripts/upstream.py` -- is the workflow everyone shares.
 Your parts and assemblies, `PROJECT.md`, `common/printer.py` and
-`parts/BACKLOG.md` are **yours** and never leave this repo. A file of your own
+`parts/BACKLOG.md` are **yours**: they go to the owner's private repo, never
+to the starter. A file of your own
 inside a shared folder (a helper for your own hardware in `common/`, say) is
 listed in `.upstream-private` so it stays yours too.
 
@@ -154,18 +156,25 @@ listed in `.upstream-private` so it stays yours too.
   is its own commit. The pre-commit hook refuses a mixed commit
   (`upstream.py check-commit`); if one slips past it, `scripts/upstream.py push`
   shares only its framework files and leaves yours here.
-- **Sharing goes branch -> your main -> pull request.** Merge a finished
-  branch into your main first: `push` shares only what is on main, as a pull
+- **Two remotes.** `origin` is the owner's **private** repo and takes
+  everything; `upstream` is the public starter and takes only framework
+  commits, as a pull request. With no `origin` yet, the work exists on one
+  computer: offer `upstream.py private` once.
+- **The loop: branch -> your main -> `backup` -> `push` (pull request) ->
+  owner merges -> `pull` -> `backup`.** Merge a finished branch (a part or a
+  fix) into main and run `upstream.py backup` straight away: it is private,
+  so back up without asking. `push` shares only what is on main, as a pull
   request on the starter (one `share` branch, updated on each push), never
   straight to its main. The owner merges it on GitHub (merge commit or
   rebase, not squash), then `pull` brings it back.
 - Personal facts (your printer, material, vehicle, editor) go in `PROJECT.md`
   or `common/printer.py`, never into framework files.
 - `./venv/bin/python scripts/upstream.py status` shows workflow commits not
-  yet shared and starter updates not yet merged; `pull` merges the starter's
-  updates; `push` opens or updates the pull request (ask the owner first --
-  it is a public repo). A `pre-push` hook blocks any push of your
-  own files to the starter remote.
+  yet shared, starter updates not yet merged, and what isn't backed up;
+  `pull` merges the starter's updates; `push` opens or updates the pull
+  request (ask the owner first -- it is a public repo). A `pre-push` hook
+  blocks any push of your own files to the starter, whatever the remote is
+  called; `backup` refuses a repo GitHub says is public.
 
 ### Environment
 

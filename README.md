@@ -84,8 +84,10 @@ inserts to buy, and what to print first.
 ## Your designs stay yours
 
 Everything you design stays on your computer. Nothing is uploaded anywhere
-unless you choose to. The toolbox gets improvements over time; one command
-brings them in without touching your designs. See
+unless you choose to. For a safe copy, Claude can back everything up to a
+**private** GitHub repository that only you can see. The toolbox gets
+improvements over time; one command brings them in without touching your
+designs. See
 **[Updates and sharing](docs/sharing.md)**.
 
 Not sure what a word means? **[Glossary](docs/glossary.md)**.
