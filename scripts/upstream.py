@@ -34,6 +34,9 @@ Config (git config, set by `setup`): cad.upstream = remote name (default "upstre
 cad.upstream-since = commit after which local commits are candidates for publishing,
 cad.main = your main branch (default "main"), cad.share-branch = the starter branch `push` uses.
 `push` needs the GitHub CLI (`gh`) to open the pull request; without it, it prints the link.
+Each commit `push` copies gets a git note (refs/notes/cad-shared, local only) with the patch id of
+its copy, so once the pull request is merged the commit counts as shared even where the starter's
+files differ from yours around the change.
 """
 
 from __future__ import annotations
@@ -56,6 +59,7 @@ FRAMEWORK = (
 YOURS = ("PROJECT.md", "common/printer.py", "parts/BACKLOG.md", ".claude/settings.local.json", ".upstream-private",
          "things/")  # things/: your platform, boards, rails... (but see FRAMEWORK_IN_YOURS)
 FRAMEWORK_IN_YOURS = ("things/__init__.py", "things/templates/")  # the convention itself is shared
+NOTES = "cad-shared"  # refs/notes/cad-shared: local commit -> patch id of its copy on the starter (never pushed)
 PRIVATE_LIST = ROOT / ".upstream-private"  # optional: more of your own paths, one per line ("dir/" for a folder)
 
 
@@ -146,7 +150,27 @@ def candidates(up: str, ref: str | None = None) -> list[str]:
             sys.exit(f"cad.upstream-since is '{since}', not a commit id -- run: ./venv/bin/python scripts/upstream.py mark")
     rng = f"{since}..{ref}" if since else f"{up}/main..{ref}"
     unpublished = {ln[2:] for ln in git("cherry", f"{up}/main", ref).splitlines() if ln.startswith("+ ")}
+    if unpublished:  # a commit replayed by `push` differs from yours in context: match it by its note
+        merged = patch_ids(f"{up}/main")
+        unpublished = {c for c in unpublished if shared_as(c) not in merged}
     return [c for c in git("rev-list", "--reverse", "--no-merges", rng).split() if c in unpublished]
+
+
+def patch_id(diff: str) -> str:
+    out = subprocess.run(["git", "patch-id", "--stable"], cwd=ROOT, input=diff, capture_output=True, text=True)
+    return out.stdout.split()[0] if out.stdout.strip() else ""
+
+
+def patch_ids(rev: str) -> set[str]:
+    """Patch ids of every non-merge commit on `rev`."""
+    log = git("log", "--no-merges", "-p", "--format=commit %H", rev)
+    out = subprocess.run(["git", "patch-id", "--stable"], cwd=ROOT, input=log + "\n", capture_output=True, text=True)
+    return {ln.split()[0] for ln in out.stdout.splitlines() if ln.strip()}
+
+
+def shared_as(c: str) -> str | None:
+    """The patch id of the copy `push` made of commit `c` (a git note), or None if never pushed."""
+    return git("notes", f"--ref={NOTES}", "show", c, check=False) or None
 
 
 def subject(sha: str) -> str:
@@ -241,6 +265,10 @@ def cmd_push() -> int:
             for c in todo:
                 if _replay(c, wt):
                     published.append(c)
+                    # remember what the copy looks like: its diff has the starter's context, not yours,
+                    # so once merged it is recognised by this note rather than by your commit's own diff
+                    copy = subprocess.run(["git", "show", "--format=", "HEAD"], cwd=wt, capture_output=True, text=True)
+                    git("notes", f"--ref={NOTES}", "add", "-f", "-m", patch_id(copy.stdout), c)
             if published:  # one branch, rewritten each time: an open pull request just updates
                 subprocess.run(["git", "push", "--force", up, f"HEAD:refs/heads/{share_branch()}"], cwd=wt, check=True)
         finally:
