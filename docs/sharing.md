@@ -49,10 +49,15 @@ to everyone:
 
 - **Not the repo's owner?** Open a pull request on GitHub, or tell the owner.
 - **The owner, or set up to share?**
+  finish the change on its branch and merge it into your `main` first:
+  only what is on `main` is shared. Then
   `./venv/bin/python scripts/upstream.py status` shows what's ready to share,
-  and `push` publishes it. Only toolbox files are ever sent. If a change mixes
-  toolbox files with a design, the design part is left out. A safety check
-  blocks any push that would include your own files.
+  and `push` opens a **pull request** on the shared toolbox. Nothing reaches
+  its `main` until you merge that pull request on GitHub (choose "Create a
+  merge commit" or "Rebase and merge", not "Squash"); then `pull` brings it
+  back here. Only toolbox files are ever sent. If a change mixes toolbox
+  files with a design, the design part is left out. A safety check blocks
+  any push that would include your own files.
 
 Claude keeps toolbox improvements and designs separate as it works, and asks
 before sharing anything. A second safety check refuses to save (commit) a
