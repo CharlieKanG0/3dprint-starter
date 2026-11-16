@@ -153,13 +153,18 @@ listed in `.upstream-private` so it stays yours too.
 - Never mix the two in one commit: a workflow fix is its own commit, a part
   is its own commit. The pre-commit hook refuses a mixed commit
   (`upstream.py check-commit`); if one slips past it, `scripts/upstream.py push`
-  publishes only its framework files and leaves yours here.
+  shares only its framework files and leaves yours here.
+- **Sharing goes branch -> your main -> pull request.** Merge a finished
+  branch into your main first: `push` shares only what is on main, as a pull
+  request on the starter (one `share` branch, updated on each push), never
+  straight to its main. The owner merges it on GitHub (merge commit or
+  rebase, not squash), then `pull` brings it back.
 - Personal facts (your printer, material, vehicle, editor) go in `PROJECT.md`
   or `common/printer.py`, never into framework files.
 - `./venv/bin/python scripts/upstream.py status` shows workflow commits not
   yet shared and starter updates not yet merged; `pull` merges the starter's
-  updates; `push` publishes your framework-only commits (ask the owner
-  first -- it is a public repo). A `pre-push` hook blocks any push of your
+  updates; `push` opens or updates the pull request (ask the owner first --
+  it is a public repo). A `pre-push` hook blocks any push of your
   own files to the starter remote.
 
 ### Environment
