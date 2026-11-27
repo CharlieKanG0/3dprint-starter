@@ -45,7 +45,7 @@ That panel is not reachable from a browser: it doesn't answer plain HTTP.
 
 In `ocp_vscode` 4.x the standalone server is a separate package, `ocp_viewer`.
 `./setup.sh` installs it into its own venv, `./.viewer-venv` -- keep it out of
-the project venv (see the `cadquery` warning in CLAUDE.md). Point
+the project venv (see the `cadquery` warning in AGENTS.md). Point
 `OCP_VIEWER_PYTHON` at another interpreter to use a different install.
 
 Each session, one viewer and tab per part (several parts side by side):

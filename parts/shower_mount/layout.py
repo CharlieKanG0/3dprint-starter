@@ -1,4 +1,4 @@
-"""Shower mount -- layout schematics: the "sketch before you model" record (CLAUDE.md step 0).
+"""Shower mount -- layout schematics: the "sketch before you model" record (AGENTS.md step 0).
 
 End view looking along the vehicle: +X = outward from the vehicle side, +Z = up.
 Origin = top outer corner of the platform side rail. A printed snap claw at the

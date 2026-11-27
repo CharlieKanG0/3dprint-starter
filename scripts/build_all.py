@@ -63,7 +63,7 @@ def main() -> int:
     failed = []
     args = sys.argv[1:]
     inv = subprocess.run([sys.executable, str(ROOT / "scripts/things.py"), "--check"], capture_output=True, text=True)
-    if inv.returncode != 0:  # things/INVENTORY.md is generated; CLAUDE.md imports it, so it must be current
+    if inv.returncode != 0:  # things/INVENTORY.md is generated; AGENTS.md loads it, so it must be current
         print(inv.stdout.strip())
         return 1
     if args in ([], ["--staged"]):  # the downloaded-model helpers (common/meshmod.py): cheap, and every mod part depends on them

@@ -4,7 +4,7 @@
 downloaded mesh (what exists, true size) into layout_existing_*.svg; then draw each candidate
 change as its own lettered Sketch on top of a slice, run it, look at the SVGs yourself, show
 them, and wait for the user's letter + corrections. See parts/templates/layout_template.py for
-the rules of a good schematic, and CLAUDE.md step 0.
+the rules of a good schematic, and AGENTS.md step 0.
 
 Run:     ../../venv/bin/python layout.py
 Output:  layout_existing_top/front/side.svg, layout_a.svg, ... (next to this script)

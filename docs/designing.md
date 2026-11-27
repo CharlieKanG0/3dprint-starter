@@ -1,11 +1,11 @@
 # Designing a part
 
-How to get the best out of designing with Claude. If you haven't set up yet,
-start with **[Getting started](getting-started.md)**.
+How to get the best out of designing with your AI agent. If you haven't set up
+yet, start with **[Getting started](getting-started.md)**.
 
 ## Describe what you need
 
-The more Claude knows up front, the fewer questions it asks. A good request says:
+The more the agent knows up front, the fewer questions it asks. A good request says:
 
 - **What it's for.** *"Hold a shower head on the side of my roof rack."*
 - **What it attaches to,** and how: screws, bolts, clips, a slot or rail.
@@ -15,9 +15,9 @@ The more Claude knows up front, the fewer questions it asks. A good request says
 - **Material,** if you know: PETG for general use, ASA for outdoors and in
   the sun, the "CF" versions for stiff, precise parts.
 
-Don't worry about getting it all: Claude asks for what's missing. You can
-also say *"assume the rest"*, and Claude picks sensible values and lists
-every guess so you can check them later.
+Don't worry about getting it all: the agent asks for what's missing. You can
+also say *"assume the rest"*, and it picks sensible values and lists every
+guess so you can check them later.
 
 Starting from a model someone else made? See
 **[Changing a model you downloaded](modifying.md)**.
@@ -30,7 +30,7 @@ Starting from a model someone else made? See
 - **The existing part,** if you're replacing or improving one.
 
 **Product links work too.** Paste the link to something you bought (a shower
-head, recovery boards, a bike light) and Claude reads the spec sheet and
+head, recovery boards, a bike light) and the agent reads the spec sheet and
 photos itself before asking you anything.
 
 ## Measuring
@@ -43,22 +43,22 @@ Digital calipers make this easy. Measure in millimetres:
 - **Holes:** the inside diameter, and the distance between hole centres.
 - **Distances:** a tape measure is fine for big things. Say "about".
 
-Don't have calipers? A ruler and "about" works for a first try, and Claude
+Don't have calipers? A ruler and "about" works for a first try, and the agent
 will design in a little extra room for adjustment.
 
 ## Choosing between options
 
-Before modelling anything, Claude draws two or three **sketches**, labelled
+Before modelling anything, the agent draws two or three **sketches**, labelled
 A, B and C. They're flat diagrams with real sizes, showing where the part
-sits and how it works. Claude recommends one and explains the trade-offs.
+sits and how it works. It recommends one and explains the trade-offs.
 
 - **Reply with a letter.** *"B."*
 - **Or a letter plus changes.** *"B, but put the knob on the other side."*
 - **Or ask for something else.** *"None of these, can it clip on instead of bolting?"*
 
-"Yes" isn't an answer to "A or B?". Claude will ask which one you mean.
+"Yes" isn't an answer to "A or B?". The agent will ask which one you mean.
 If you add a new feature halfway through ("make it fold", "make it
-telescopic"), Claude sketches options for that too before building it.
+telescopic"), it sketches options for that too before building it.
 
 ## Checking the 3D model
 
@@ -78,31 +78,30 @@ arm be thicker?"*
 - **Print the critical piece first,** the one that has to fit something
   (a clip, a joint, a pocket for a nut). It's quicker than printing the whole
   thing and finding one bit doesn't fit. When the fit is in the middle of a
-  big part, ask Claude for a **test piece**: a thin slice through just that
-  spot, printed in minutes.
-- Claude's summary lists **hardware to buy** (screws, bolts, nuts, springs,
+  big part, ask for a **test piece**: a thin slice through just that spot,
+  printed in minutes.
+- The agent's summary lists **hardware to buy** (screws, bolts, nuts, springs,
   brass inserts) with sizes.
 - **Report fits with numbers when you can:** *"loose by about 1 mm"*, *"the
   bolt won't go through"*, *"snaps on but too tight to remove"*.
-- When something fits, say so. Claude marks the part as done.
+- When something fits, say so. The agent marks the part as done.
 - **Coming back another day?** Each unfinished part notes what it is waiting
   on (your pick of a sketch, a measurement, a test print). Ask *"where did we
-  leave the shovel mount?"* and Claude starts from there.
+  leave the shovel mount?"* and the agent starts from there.
 
-## Measurements Claude remembers
+## Measurements the repo remembers
 
 When you describe something you'll design for again (your roof rack, your
-desk, a rail), Claude offers to save its measurements in the **`things/`**
-folder. After that, future parts use the saved numbers and Claude doesn't
-ask again. Numbers that were guesses are marked, and Claude can list them:
-ask *"what do I still need to measure?"* and it gives you a checklist for
-your next go with the calipers.
+desk, a rail), the agent offers to save its measurements in the **`things/`**
+folder. After that, future parts use the saved numbers and it doesn't ask
+again. Numbers that were guesses are marked, and you can ask *"what do I still
+need to measure?"* for a checklist for your next go with the calipers.
 
 ## Tips
 
-- **One part per conversation** keeps things clear. Claude remembers your
-  printer, materials and saved measurements between conversations.
-- **Ideas for later?** Ask Claude to *"add it to the backlog"*.
+- **One part per conversation** keeps things clear. Your printer, materials
+  and saved measurements live in the repo, so every agent session has them.
+- **Ideas for later?** Ask the agent to *"add it to the backlog"*.
 - **Start small.** A hook or clip teaches you the loop in one evening.
-- **Ask why.** *"Why option B?"*, *"why is this part split in two?"* Claude
-  explains its reasoning.
+- **Ask why.** *"Why option B?"*, *"why is this part split in two?"* The
+  agent explains its reasoning.

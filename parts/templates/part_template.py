@@ -3,7 +3,7 @@
 <Longer description: what it mounts to or mates with, and what it's for.>
 
 Layout:    layout.py -> layout.svg (labelled schematic, confirmed with the
-           user before modeling -- CLAUDE.md step 0; see common/sketch.py)
+           user before modeling -- AGENTS.md step 0; see common/sketch.py)
 
 Material:  <PETG / ASA / PETG-CF / ASA-CF -- state which and why if non-obvious>
 Printer:   see common/printer.py
@@ -32,7 +32,7 @@ from common.verify import (  # noqa: F401
     require_layout,
 )
 
-# No geometry before the user has confirmed a layout (CLAUDE.md step 0). This fails
+# No geometry before the user has confirmed a layout (AGENTS.md step 0). This fails
 # until layout.py has been run and its CONFIRMED line records the user's choice.
 require_layout(__file__)
 
@@ -54,7 +54,7 @@ require_layout(__file__)
 
 
 with BuildPart() as part:
-    # TODO: build the part. See CLAUDE.md "House rules" before you do:
+    # TODO: build the part. See AGENTS.md "House rules" before you do:
     #   - build cutting tools (Cylinder, Box, ...) OUTSIDE this `with` block
     #     if you need to `.locate()` them before subtracting -- constructing
     #     one as a bare statement inside an open BuildPart auto-adds it at

@@ -1,6 +1,9 @@
-"""Share workflow improvements with the starter repo, and pull its updates, without ever sharing your parts.
+"""Back up your whole repo to your own private GitHub repo, share workflow improvements with the
+starter, and pull its updates -- without ever sharing your parts.
 
-    ./venv/bin/python scripts/upstream.py status   # what would be published / pulled, and the open pull request
+    ./venv/bin/python scripts/upstream.py status   # what is not backed up, what would be published / pulled
+    ./venv/bin/python scripts/upstream.py private [name]   # one time: create your private repo (remote "origin")
+    ./venv/bin/python scripts/upstream.py backup   # push your main, every branch and the notes to it
     ./venv/bin/python scripts/upstream.py push     # propose your main's FRAMEWORK commits as a pull request on the starter
     ./venv/bin/python scripts/upstream.py pull     # merge the starter's main into your current branch
     ./venv/bin/python scripts/upstream.py setup <url>   # one time, in a repo that started from the starter
@@ -8,15 +11,21 @@
     ./venv/bin/python scripts/upstream.py check-commit  # pre-commit: refuse a commit that mixes the two kinds
 
 The split: FRAMEWORK paths (below) are the shared workflow -- helpers, scripts, templates,
-docs, CLAUDE.md, the worked example. Everything else is YOURS -- your parts, assemblies,
+docs, AGENTS.md, skills, the worked example. Everything else is YOURS -- your parts, assemblies,
 things/ (the real objects they fit), PROJECT.md, common/printer.py, parts/BACKLOG.md --
 and never leaves this repo. A file of
 your own inside a shared folder (say common/my_rail.py) goes in `.upstream-private`,
 one path per line, and is then yours too.
 
-The flow: work on a branch -> merge it into YOUR main -> `push` -> the owner merges the pull
-request on GitHub -> `pull` brings it back. Only what is on your main is ever shared, so a
-half-done branch can't leak out, and nothing reaches the starter's main without a review.
+Two remotes, two rules:
+- your private repo (cad.private, default "origin") gets EVERYTHING -- parts, PROJECT.md, branches.
+  `backup` pushes to it; it is yours alone, so back up whenever main moves (no need to ask).
+  `private` and `backup` refuse a repo that GitHub says is public.
+- the starter (cad.upstream, default "upstream") gets only framework commits, as a pull request.
+
+The flow: work on a branch -> merge it into YOUR main -> `backup` -> `push` -> the owner merges the
+pull request on GitHub -> `pull` brings it back -> `backup`. Only what is on your main is ever shared,
+so a half-done branch can't leak out, and nothing reaches the starter's main without a review.
 
 How `push` works: it takes your main's commits that the starter doesn't have yet, oldest
 first, and replays them onto the starter's main in a scratch checkout -- a framework-only
@@ -27,20 +36,23 @@ rewritten on every push) and a pull request from it into main is opened, or upda
 already open. Merge it with "Create a merge commit" or "Rebase and merge", not "Squash": a
 squashed commit no longer matches yours, so `push` would offer it again. Keeping
 fixes and parts in separate commits is still the habit to aim for. `.githooks/pre-push`
-runs `check-push` so a plain `git push` to the starter can't leak your parts either, and
+runs `check-push` so a plain `git push` to the starter can't leak your parts either (any remote
+whose URL is the starter's counts, whatever its name), and
 `.githooks/pre-commit` runs `check-commit` so a mixed commit is caught when it is made.
 
-Config (git config, set by `setup`): cad.upstream = remote name (default "upstream"),
+Config (git config, set by `setup` / `private`): cad.upstream = starter remote (default "upstream"),
+cad.private = your private repo's remote (default "origin"),
 cad.upstream-since = commit after which local commits are candidates for publishing,
 cad.main = your main branch (default "main"), cad.share-branch = the starter branch `push` uses.
 `push` needs the GitHub CLI (`gh`) to open the pull request; without it, it prints the link.
-Each commit `push` copies gets a git note (refs/notes/cad-shared, local only) with the patch id of
-its copy, so once the pull request is merged the commit counts as shared even where the starter's
+Each commit `push` copies gets a git note (refs/notes/cad-shared; `backup` keeps a copy in your
+private repo, never on the starter) with the patch id of its copy, so once the pull request is merged the commit counts as shared even where the starter's
 files differ from yours around the change.
 """
 
 from __future__ import annotations
 
+import json
 import re
 import shutil
 import subprocess
@@ -51,7 +63,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 FRAMEWORK = (
-    ".claude/", ".githooks/", ".vscode/", "common/", "docs/", "scripts/",
+    ".agents/", ".claude/", ".githooks/", ".vscode/", "common/", "docs/", "scripts/",
     "parts/templates/", "parts/shower_mount/", "assemblies/templates/",
     "AGENTS.md", "CLAUDE.md", "README.md", "setup.sh", "requirements.txt", "requirements-viewer.txt",
     ".python-version", ".gitignore", ".gitattributes", "exports/.gitkeep",
@@ -59,7 +71,7 @@ FRAMEWORK = (
 YOURS = ("PROJECT.md", "common/printer.py", "parts/BACKLOG.md", ".claude/settings.local.json", ".upstream-private",
          "things/")  # things/: your platform, boards, rails... (but see FRAMEWORK_IN_YOURS)
 FRAMEWORK_IN_YOURS = ("things/__init__.py", "things/templates/")  # the convention itself is shared
-NOTES = "cad-shared"  # refs/notes/cad-shared: local commit -> patch id of its copy on the starter (never pushed)
+NOTES = "cad-shared"  # refs/notes/cad-shared: local commit -> patch id of its copy on the starter (backed up, never shared)
 PRIVATE_LIST = ROOT / ".upstream-private"  # optional: more of your own paths, one per line ("dir/" for a folder)
 
 
@@ -100,6 +112,36 @@ def remote() -> str:
     return name
 
 
+def private_remote() -> str | None:
+    """Name of your private repo's remote, or None if there is none yet."""
+    name = config("cad.private", "origin")
+    return name if name in git("remote").split() else None
+
+
+def remote_slug(name: str) -> str | None:
+    """owner/repo of a GitHub remote, or None (not GitHub, or no such remote)."""
+    url = git("remote", "get-url", name, check=False)
+    m = re.search(r"github\.com[:/]+([^/]+/[^/]+?)(?:\.git)?/?$", url)
+    return m.group(1) if m else None
+
+
+def is_starter(name: str) -> bool:
+    """True for the starter remote, or any other remote pointing at the same repository."""
+    starter = config("cad.upstream", "upstream")
+    if name == starter:
+        return True
+    slug, starter_slug = remote_slug(name), remote_slug(starter)
+    return slug is not None and starter_slug is not None and slug.lower() == starter_slug.lower()
+
+
+def gh_is_private(slug: str) -> bool | None:
+    """GitHub's word on whether owner/repo is private; None when gh can't tell (not installed, offline)."""
+    if not shutil.which("gh"):
+        return None
+    out = subprocess.run(["gh", "repo", "view", slug, "--json", "isPrivate"], capture_output=True, text=True)
+    return json.loads(out.stdout)["isPrivate"] if out.returncode == 0 else None
+
+
 def main_branch() -> str:
     return config("cad.main", "main")
 
@@ -110,11 +152,10 @@ def share_branch() -> str:
 
 def github_slug(up: str) -> str:
     """owner/repo of the remote, from its URL (https or ssh)."""
-    url = git("remote", "get-url", up)
-    m = re.search(r"github\.com[:/]+([^/]+/[^/]+?)(?:\.git)?/?$", url)
-    if not m:
-        sys.exit(f"remote '{up}' ({url}) is not a GitHub repo -- `push` opens a GitHub pull request")
-    return m.group(1)
+    slug = remote_slug(up)
+    if not slug:
+        sys.exit(f"remote '{up}' ({git('remote', 'get-url', up)}) is not a GitHub repo -- `push` opens a GitHub pull request")
+    return slug
 
 
 def open_pr(slug: str) -> str:
@@ -190,14 +231,41 @@ def cmd_status() -> int:
         print("mixed -- `push` publishes only their framework files; your files stay here:")
         for c in groups["mixed"]:
             print("   ", subject(c), "-> keeps local:", ", ".join(f for f in files_of(c) if not is_framework(f)))
-    print(f"yours, staying local: {len(groups['yours'])} commit(s)")
+    print(f"yours, never shared: {len(groups['yours'])} commit(s)")
     _warn_unmerged(up)
     pr = open_pr(github_slug(up))
     if pr:
         print(f"open pull request (merge it on GitHub, then `pull`): {pr}")
     behind = git("rev-list", "--count", f"HEAD..{up}/main")
     print(f"starter commits not merged here yet: {behind}" + ("  (run `pull`)" if behind != "0" else ""))
+    _backup_status()
     return 0
+
+
+def _unbacked(priv: str) -> dict[str, int]:
+    """Local branch -> commits on it that the private repo doesn't have (branches with none left out)."""
+    out = {}
+    for b in git("for-each-ref", "--format=%(refname:short)", "refs/heads").split():
+        n = int(git("rev-list", "--count", b, "--not", f"--remotes={priv}"))
+        if n:
+            out[b] = n
+    return out
+
+
+def _backup_status() -> None:
+    priv = private_remote()
+    if not priv:
+        print("private repo: none yet -- your parts exist only on this computer. "
+              "Make one: ./venv/bin/python scripts/upstream.py private")
+        return
+    if is_starter(priv):
+        print(f"private repo: WARNING '{priv}' points at the public starter -- see `private`")
+        return
+    git("fetch", "-q", priv, check=False)
+    todo = _unbacked(priv)
+    print(f"private repo ('{priv}', {git('remote', 'get-url', priv)}): "
+          + ("everything backed up" if not todo else
+             "not backed up yet -- " + ", ".join(f"{b} {n}" for b, n in todo.items()) + "  (run `backup`)"))
 
 
 def _warn_unmerged(up: str) -> None:
@@ -216,6 +284,8 @@ def cmd_pull() -> int:
     git("config", "merge.ours.driver", "true")  # .gitattributes: your files keep your version
     git("fetch", "-q", up)
     out = subprocess.run(["git", "merge", "--no-edit", f"{up}/main"], cwd=ROOT, text=True)
+    if out.returncode == 0 and private_remote():
+        print("back it up: ./venv/bin/python scripts/upstream.py backup")
     return out.returncode
 
 
@@ -298,8 +368,9 @@ def cmd_push() -> int:
 
 
 def cmd_check_push(remote_name: str) -> int:
-    """pre-push hook: refuse to send anything but framework-only commits to the starter remote."""
-    if remote_name != config("cad.upstream", "upstream"):
+    """pre-push hook: refuse to send anything but framework-only commits to the starter remote
+    (by name, or any remote with the starter's URL)."""
+    if not is_starter(remote_name):
         return 0
     bad = []
     for line in sys.stdin.read().splitlines():
@@ -346,9 +417,94 @@ def cmd_setup(url: str) -> int:
     git("config", "cad.upstream", name)
     git("config", "merge.ours.driver", "true")
     git("fetch", "-q", name)
+    priv = private_remote()
+    if priv and not is_starter(priv):  # a clone of your private repo: bring back the record of what is shared
+        git("fetch", "-q", priv, f"+refs/notes/{NOTES}:refs/notes/{NOTES}", check=False)
     print(f"remote '{name}' -> {url}. If this repo has its own history, connect it once with:\n"
           f"    git merge --allow-unrelated-histories {name}/main\n"
           f"then mark the sync point:  ./venv/bin/python scripts/upstream.py mark")
+    return 0
+
+
+def cmd_private(arg: str | None) -> int:
+    """Connect your private repo as the `cad.private` remote: create it on GitHub (gh) from a name,
+    or use an existing repo's URL. A fresh clone's "origin" is the starter: it is renamed first."""
+    name = config("cad.private", "origin")
+    starter = config("cad.upstream", "upstream")
+    remotes = git("remote").split()
+    if name in remotes and starter not in remotes:  # a clone: is origin the starter, or your own repo?
+        is_priv = gh_is_private(remote_slug(name) or "")
+        if is_priv is False:  # public: the starter you cloned
+            git("remote", "rename", name, starter)
+            git("config", "cad.upstream", starter)
+            print(f"remote '{name}' was the starter you cloned: renamed it '{starter}'")
+            remotes = git("remote").split()
+        elif is_priv is None:
+            sys.exit(f"can't tell whether '{name}' ({git('remote', 'get-url', name)}) is the starter or your own "
+                     f"repo (needs gh). The starter? `git remote rename {name} {starter}`, then run `private` again. "
+                     f"Yours? connect the starter: `upstream.py setup <starter-url>`")
+        else:
+            print(f"connect the starter too: ./venv/bin/python scripts/upstream.py setup <starter-url>")
+    if name in remotes:
+        if is_starter(name):
+            sys.exit(f"remote '{name}' points at the starter ({git('remote', 'get-url', name)}): "
+                     f"remove it (git remote remove {name}) and run `private` again")
+        print(f"already connected: '{name}' -> {git('remote', 'get-url', name)}")
+    else:
+        if arg and ("/" in arg and (":" in arg or arg.startswith("http"))):
+            url = arg
+        else:
+            if not shutil.which("gh"):
+                sys.exit("needs the GitHub CLI to create the repo (brew install gh; gh auth login), "
+                         "or create a PRIVATE repo on github.com and pass its URL")
+            repo = arg or Path(git("rev-parse", "--path-format=absolute", "--git-common-dir")).parent.name
+            out = subprocess.run(["gh", "repo", "create", repo, "--private",
+                                  "--description", "My parts (code-first CAD), private"],
+                                 capture_output=True, text=True)
+            if out.returncode != 0:
+                sys.exit(f"could not create '{repo}' on GitHub:\n{out.stderr.strip()}")
+            url = out.stdout.strip().splitlines()[-1]
+            print(f"created private repo {url}")
+        git("remote", "add", name, url)
+        if is_starter(name):
+            git("remote", "remove", name)
+            sys.exit(f"{url} is the starter itself -- give your own repo's name or URL")
+    git("config", "cad.private", name)
+    rc = cmd_backup()
+    if rc == 0:
+        if subprocess.run(["git", "branch", f"--set-upstream-to={name}/{main_branch()}", main_branch()],
+                          cwd=ROOT, capture_output=True).returncode == 0:
+            print(f"`git pull` on {main_branch()} now pulls from your private repo; "
+                  "starter updates come with `upstream.py pull`")
+    return rc
+
+
+def cmd_backup() -> int:
+    """Push your main, every local branch and the shared-notes to your private repo."""
+    priv = private_remote()
+    if not priv:
+        sys.exit("no private repo yet -- run: ./venv/bin/python scripts/upstream.py private [name]")
+    if is_starter(priv):
+        sys.exit(f"'{priv}' points at the public starter -- not backing up there")
+    slug = remote_slug(priv)
+    if slug and gh_is_private(slug) is False:
+        sys.exit(f"{slug} is PUBLIC on GitHub -- your parts would be public. Make it private first "
+                 f"(gh repo edit {slug} --visibility private --accept-visibility-change-consequences)")
+    refs = ["refs/heads/*:refs/heads/*"]
+    if git("rev-parse", "--verify", "--quiet", f"refs/notes/{NOTES}", check=False):
+        refs.append(f"refs/notes/{NOTES}:refs/notes/{NOTES}")
+    out = subprocess.run(["git", "push", "--porcelain", priv, *refs], cwd=ROOT, capture_output=True, text=True)
+    rejected = [ln for ln in out.stdout.splitlines() if ln.startswith("!")]
+    if out.returncode != 0:
+        print(f"backup to '{priv}' incomplete:", file=sys.stderr)
+        for ln in rejected:
+            print("   ", ln, file=sys.stderr)
+        print(out.stderr.strip(), file=sys.stderr)
+        print("a rejected branch has commits there that are not here (another computer?): "
+              "pull or merge it, then back up again", file=sys.stderr)
+        return 1
+    todo = _unbacked(priv)
+    print(f"backed up to '{priv}' ({git('remote', 'get-url', priv)})" + (f"; still missing: {todo}" if todo else ""))
     return 0
 
 
@@ -377,6 +533,10 @@ def main() -> int:
         return cmd_check_commit()
     if cmd == "mark":
         return cmd_mark()
+    if cmd == "private":
+        return cmd_private(rest[0] if rest else None)
+    if cmd == "backup":
+        return cmd_backup()
     if cmd == "setup" and rest:
         return cmd_setup(rest[0])
     print(__doc__)

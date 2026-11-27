@@ -6,7 +6,7 @@
 
 A thing is things/<name>.py: its docstring's first line says what it is; each constant's
 comment starts with a source tag -- MEASURED, DATASHEET, GIVEN or ASSUMED -- then where the
-number came from. CLAUDE.md imports INVENTORY.md, so every session starts knowing what is on
+number came from. AGENTS.md loads INVENTORY.md, so every session starts knowing what is on
 file and what still needs measuring.
 """
 

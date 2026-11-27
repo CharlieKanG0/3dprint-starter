@@ -7,7 +7,7 @@ description: Use whenever the user asks to design, make, model, or change a phys
 
 (Starting from a model the user **downloaded** -- a `.3mf` / `.stl`? Use the `modify-model` skill instead.)
 
-Follow `CLAUDE.md` "Workflow". This is the order, with the steps people skip in bold.
+Follow `AGENTS.md` "Workflow". This is the order, with the steps people skip in bold.
 
 1. **Read every photo first.** The installed-state photo settles orientation
    (record it as `DOWN` in `layout.py`, so sketches and renders show it in use).
@@ -41,7 +41,7 @@ Follow `CLAUDE.md` "Workflow". This is the order, with the steps people skip in 
    hardware to buy, what to print first to test (a short slice through a fitting
    feature: `export_mesh(meshmod.test_piece(part, ...))`) -- and, if the user described
    a new real object future parts will likely fit, offer to save it to
-   `things/` (CLAUDE.md), unless you already asked.
+   `things/` (AGENTS.md), unless you already asked.
    **Hand it to their slicer:** open the `.step` in the slicer `PROJECT.md` names (macOS:
    `open -a "<Slicer>" <file>`) and show it in the file browser (`open -R <file>`), so they never
    hunt for a path. Not named yet? Ask once and write it into `PROJECT.md`.
