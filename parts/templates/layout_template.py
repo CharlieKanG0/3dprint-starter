@@ -1,4 +1,4 @@
-"""<Part name> -- layout schematic: the "sketch before you model" record (CLAUDE.md step 0).
+"""<Part name> -- layout schematic: the "sketch before you model" record (AGENTS.md step 0).
 
 Copy next to the part script as parts/<name>/layout.py, fill it in, run it, open
 layout.svg in a browser, screenshot it and check it yourself, then send it to the

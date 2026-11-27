@@ -2,7 +2,7 @@
 
 Your designs stay yours: on your computer, and (once you make one) in your
 own **private** GitHub repository. This page covers backing up your work,
-getting toolbox improvements, and suggesting a fix. You can ask Claude
+getting toolbox improvements, and suggesting a fix. You can ask your agent
 to do any of it: *"get the latest toolbox updates"*, *"back up my designs"*.
 
 ## What's yours, and what's shared
@@ -11,7 +11,8 @@ to do any of it: *"get the latest toolbox updates"*, *"back up my designs"*.
   `PROJECT.md`, `common/printer.py` and `parts/BACKLOG.md`. These go only to
   your private backup, never to the shared toolbox.
 - **Shared toolbox:** everything else: the drawing, checking and viewing tools,
-  Claude's instructions, these guides. It improves over time.
+  the agent's instructions (`AGENTS.md`, `.agents/skills/`), these guides. It
+  improves over time.
 
 ## Three places your work lives
 
@@ -52,14 +53,14 @@ design goes 1 → 2 and stops there.
 ## Backing up your designs
 
 Until you make a backup, your designs live in one folder on one computer.
-Ask Claude: *"Back up my designs to a private GitHub repo."* Once, it creates
-the repository (private, free) and connects it:
+Ask the agent: *"Back up my designs to a private GitHub repo."* Once, it
+creates the repository (private, free) and connects it:
 
 ```sh
 ./venv/bin/python scripts/upstream.py private          # makes github.com/<you>/3dprint, private
 ```
 
-From then on, backing up is one command, and Claude runs it each time a
+From then on, backing up is one command, and the agent runs it each time a
 finished change lands on your `main`:
 
 ```sh
@@ -78,7 +79,7 @@ repository on github.com yourself and pass its address:
 
 ## Getting updates
 
-Ask Claude: *"Get the latest toolbox updates."* Updates never overwrite
+Ask the agent: *"Get the latest toolbox updates."* Updates never overwrite
 your designs, your saved measurements or your settings. Before you have a
 private repo, that is `git pull`; after, `git pull` fetches your own backup and
 toolbox updates come with:
@@ -89,7 +90,7 @@ toolbox updates come with:
 
 ## Suggesting an improvement
 
-Found a better way of doing something, or did Claude fix a toolbox problem
+Found a better way of doing something, or did the agent fix a toolbox problem
 while designing? Improvements to the toolbox (never your designs) can go back
 to everyone:
 
@@ -105,7 +106,7 @@ to everyone:
   files with a design, the design part is left out. A safety check blocks
   any push that would include your own files.
 
-Claude keeps toolbox improvements and designs separate as it works, and asks
+The agent keeps toolbox improvements and designs separate as it works, and asks
 before sharing anything. A second safety check refuses to save (commit) a
 change that mixes the two, so they always land as separate steps.
 

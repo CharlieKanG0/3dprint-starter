@@ -10,7 +10,7 @@ This skill is the loop and its rules (`docs/modifying.md` is the user's side of 
 beside it and combined (`common/meshmod.py`). The sketch-first rule still applies in full.
 
 1. **Read the file yourself.** `./venv/bin/python scripts/inspect_model.py <file> --material <their material>`.
-   Also read the product page and photos if they gave a link or the 3MF names one (CLAUDE.md: fetch
+   Also read the product page and photos if they gave a link or the 3MF names one (AGENTS.md: fetch
    links yourself). Report in plain words: size and bed fit, closed solid or not, the creator's print
    settings (and whether they were for a different printer), where the plastic goes, the licence.
    Never quote the weight/time table as fact: it is an estimate (about +-25%) until re-sliced.
@@ -48,7 +48,7 @@ beside it and combined (`common/meshmod.py`). The sketch-first rule still applie
 6. **Edit:** fill in `<name>.py`: named parameters (each sourced), new geometry in build123d in the
    model's frame, `apply_changes(base, add=[...], cut=[...])`. Cuts also pass through additions.
    Fused additions must overlap the mesh by ~1 mm, never touch on a shared face (the same rule as
-   CLAUDE.md "Never fuse faces that coincide"). An addition meant to continue one of the original's
+   AGENTS.md "Never fuse faces that coincide"). An addition meant to continue one of the original's
    faces flush (a longer tab, a filled hole) passes `snap=0.01`, so it lands exactly on that face.
 7. **Verify:** `assert_watertight`, `assert_single_body`, a probe per feature (`assert_void_at` /
    `assert_solid_at`) with a positive control on the base, bbox, volume, `mesh_bed_fit`. Then a

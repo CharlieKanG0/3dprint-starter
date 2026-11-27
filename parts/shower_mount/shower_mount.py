@@ -71,7 +71,7 @@ from common.tolerances import FIT
 from common.verify import assert_bbox, assert_single_solid, assert_volume, bed_fit, require_layout
 
 HERE = Path(__file__).parent
-require_layout(__file__)  # layout.py CONFIRMED records the user's choice (CLAUDE.md step 0)
+require_layout(__file__)  # layout.py CONFIRMED records the user's choice (AGENTS.md step 0)
 
 # ---------------------------------------------------------------------------
 # Parameters (mm)

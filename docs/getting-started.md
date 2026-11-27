@@ -3,20 +3,23 @@
 From nothing to your first printed part. No coding needed. Where you see a
 grey box, copy the text, paste it into Terminal, and press Enter.
 
-## 1. Install Claude Code
+## 1. Install a coding agent
 
-Claude Code is the AI that does the designing. You need a Claude account
-(a paid plan such as Pro or Max). Install it by following the steps at
-**[claude.com/claude-code](https://claude.com/claude-code)**.
+A coding agent is the AI that does the designing. This repo works out of the
+box with any agent that reads `AGENTS.md` / `.agents/skills/` (or `CLAUDE.md`
+/ `.claude/skills/`): **Claude Code**, **Antigravity (`agy`)**, **Codex**, or
+**Cursor**.
 
 How do you want to talk to it? Pick one:
 
-- **Orca (recommended).** An app that shows Claude, your sketches and the 3D
-  model side by side, so you see everything without switching windows.
-- **Terminal.** Works fine. Sketches and 3D models open in your web browser.
-- **VS Code.** If you already use it. Setup adds the 3D viewer panel for you.
+- **Orca (recommended).** An app that shows your agent, your sketches and the
+  3D model side by side, so you see everything without switching windows.
+- **Terminal.** Works fine (`claude`, `agy`, `codex`, etc.). Sketches and 3D
+  models open in your web browser.
+- **VS Code / Cursor.** If you already use it. Setup adds the 3D viewer panel
+  for you.
 
-You can change your mind later. Claude asks which you use on your first day.
+You can change your mind later. The agent asks which you use on your first day.
 
 ## 2. Get this repo and set it up
 
@@ -35,25 +38,25 @@ by building the example design and printing **All set**.
   **Install**, wait for it to finish, then paste the command again.
 - **Something else went wrong?** Run `cd ~/3dprint && ./setup.sh` again. It's
   safe to repeat, and it only redoes what's missing. If it still fails, copy
-  the error into Claude and ask.
+  the error into your agent and ask.
 
-## 3. Open the folder in Claude Code
+## 3. Open the folder in your coding agent
 
-- **Orca:** add the `3dprint` folder to Orca as a project, then start a
-  **Claude** agent in it.
-- **Terminal:** `cd ~/3dprint && claude`
-- **VS Code:** File → Open Folder → `3dprint`, then start Claude Code from the
-  sidebar or the terminal panel.
+- **Orca:** add the `3dprint` folder to Orca as a project, then start your
+  preferred agent (Claude, Antigravity, Codex...) in it.
+- **Terminal:** `cd ~/3dprint` and launch your agent (`claude`, `agy`, `codex`...).
+- **VS Code / Cursor:** File → Open Folder → `3dprint`, then start your agent
+  from the sidebar or the terminal panel.
 
-## 4. Say hello, and let Claude set itself up
+## 4. Say hello, and let the agent set itself up
 
 Type something like *"Hi, I'm new. Let's get set up."*
 
-Claude asks a few quick questions: what printer you have, which materials you
-like (PETG, ASA, PLA...), what kind of things you want to make, and how you're
-running Claude. It writes your answers into `PROJECT.md` and
-`common/printer.py`, so it remembers them in every future session. You don't
-need to edit any files yourself.
+The agent asks a few quick questions: what printer you have, which materials
+you like (PETG, ASA, PLA...), what kind of things you want to make, and which
+editor/agent setup you're using. It writes your answers into `PROJECT.md` and
+`common/printer.py`, so any agent you open here remembers them in every future
+session. You don't need to edit any files yourself.
 
 ## 5. Design your first part
 
@@ -66,41 +69,43 @@ Describe it, and include anything you know:
 
 What happens next:
 
-1. **Claude asks what it still needs.** A size you didn't give, which way it
-   faces, how it's used. Answer in plain words; "about 3 cm" is fine.
-2. **Claude sketches two or three options** (A, B, C), shows them, and says
+1. **The agent asks what it still needs.** A size you didn't give, which way
+   it faces, how it's used. Answer in plain words; "about 3 cm" is fine.
+2. **The agent sketches two or three options** (A, B, C), shows them, and says
    which it recommends and why. Reply with a letter, plus any changes:
    *"A, but make the hook deeper."*
-3. **Claude builds the 3D model** and opens it in the viewer. Drag to spin,
+3. **The agent builds the 3D model** and opens it in the viewer. Drag to spin,
    scroll to zoom. Look at it from all sides.
-4. **Claude reports back:** what it made, what it checked, which numbers are
-   guesses you should measure, what screws or bolts to buy, and what to print
-   first.
+4. **The agent reports back:** what it made, what it checked, which numbers
+   are guesses you should measure, what screws or bolts to buy, and what to
+   print first.
 
-Want to see a finished example first? Ask Claude: *"Walk me through the
-shower mount example."*
+Want to see a finished example first? Ask: *"Walk me through the shower mount
+example."*
 
 ## 6. Print it
 
 Your print files are in `parts/<your part>/`, ending in **`.step`**:
 
-1. Claude opens it in your slicer (Bambu Studio, OrcaSlicer, PrusaSlicer...)
-   when the part is done. To do it yourself, drag the `.step` file in.
+1. The agent opens it in your slicer (Bambu Studio, OrcaSlicer,
+   PrusaSlicer...) when the part is done. To do it yourself, drag the `.step`
+   file in.
 2. It's already the right way up for printing.
-3. Choose your material and print as you normally would. Claude's summary
-   says if a piece needs anything special.
+3. Choose your material and print as you normally would. The summary says if a
+   piece needs anything special.
 
 If a design has several pieces, print the small critical one first (the clip,
 the joint) to check the fit before printing everything.
 
-## 7. Tell Claude how it fit
+## 7. Tell the agent how it fit
 
 Measure if you can, and say what you saw:
 
 > *"The clip is too loose on the handle, about 1 mm of play. The rest fits."*
 
-Claude adjusts the design and builds it again. If your printer always prints
-holes a little small or loose, Claude records that for every future part too.
+The agent adjusts the design and builds it again. If your printer always
+prints holes a little small or loose, it records that for every future part
+too.
 
 ## Next
 
@@ -110,5 +115,4 @@ holes a little small or loose, Claude records that for every future part too.
   Printables model lighter, faster to print, or add a hole or a clamp.
 - **[Glossary](glossary.md)**: what STEP, slicer, tolerance and friends mean.
 - **[Updates and sharing](sharing.md)**: backing up to a private GitHub repo,
-  getting toolbox improvements, keeping
-  your designs private.
+  getting toolbox improvements, keeping your designs private.

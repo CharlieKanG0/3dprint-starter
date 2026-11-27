@@ -5,7 +5,7 @@ exactly as its designer made it; what this script adds or cuts is built here fro
 parameters. Workflow: docs/modifying.md. Helpers: common/meshmod.py.
 
 Source:    source/<source_file>  (title, designer and licence: see report.md)
-Layout:    layout.py -> layout_*.svg (confirmed with the user before modelling -- CLAUDE.md step 0)
+Layout:    layout.py -> layout_*.svg (confirmed with the user before modelling -- AGENTS.md step 0)
 Report:    report.md (size, condition, creator's print settings, filament estimate)
 Material:  <PETG / ASA / PETG-CF / ASA-CF -- state which and why if non-obvious>
 Printer:   see common/printer.py
@@ -41,7 +41,7 @@ from common.params import param  # noqa: F401  -- param("NAME", default) for swe
 from common.tolerances import FIT  # noqa: F401
 from common.verify import require_layout
 
-# No geometry before the user has confirmed a layout (CLAUDE.md step 0).
+# No geometry before the user has confirmed a layout (AGENTS.md step 0).
 require_layout(__file__)
 
 HERE = Path(__file__).parent

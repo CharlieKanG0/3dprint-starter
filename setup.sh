@@ -89,9 +89,10 @@ cat <<'EOF'
 
 All set.
 
-Next: open this folder in Claude Code (in Orca, or run `claude` here) and say
-"Hi, I'm new, let's get set up." Claude asks about your printer and what you
-like to make, then you can describe your first part.
+Next: open this folder in your coding agent (Claude Code, Antigravity, Codex,
+or Cursor -- in Orca, Terminal, or VS Code) and say "Hi, I'm new, let's get
+set up." The agent asks about your printer and what you like to make, then
+you can describe your first part.
 
 Step-by-step guide: docs/getting-started.md
 See the example design in 3D:  ./venv/bin/python scripts/view.py shower_mount

@@ -1,6 +1,6 @@
 """Mechanical checks every part runs before it is called done.
 
-These are the "Verify before calling a part done" checks from CLAUDE.md as
+These are the "Verify before calling a part done" checks from AGENTS.md as
 code, so a part script calls them instead of re-deriving each one inline.
 Each `assert_*` raises AssertionError with the numbers that failed.
 """
@@ -60,7 +60,7 @@ def layout_pending(folder) -> bool:
 def require_layout(script: str, exempt: str | None = None) -> None:
     """Refuse to build a part until its layout sketch exists AND the user has confirmed it.
 
-    CLAUDE.md step 0 as a check: parts/<name>/layout.py must have been run (a layout*.svg
+    AGENTS.md step 0 as a check: parts/<name>/layout.py must have been run (a layout*.svg
     next to it) and must set, at module level,
 
         CONFIRMED = "B + toothed hinge, no pull-pin -- user, 2026-11-13"
@@ -77,7 +77,7 @@ def require_layout(script: str, exempt: str | None = None) -> None:
         print(f"{name}: layout sketch skipped -- {exempt}")
         return
     layout = folder / "layout.py"
-    step0 = "CLAUDE.md step 0: sketch lettered layouts in layout.py, show them, get the user's letter + corrections"
+    step0 = "AGENTS.md step 0: sketch lettered layouts in layout.py, show them, get the user's letter + corrections"
     assert layout.exists(), f"{name}: no layout.py -- {step0} (scripts/new.py creates it)."
     assert any(folder.glob("layout*.svg")), f"{name}: layout.py has never been run (no layout*.svg) -- {step0}."
     confirmed = layout_confirmed(folder)

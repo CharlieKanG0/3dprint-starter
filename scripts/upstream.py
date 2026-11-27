@@ -11,7 +11,7 @@ starter, and pull its updates -- without ever sharing your parts.
     ./venv/bin/python scripts/upstream.py check-commit  # pre-commit: refuse a commit that mixes the two kinds
 
 The split: FRAMEWORK paths (below) are the shared workflow -- helpers, scripts, templates,
-docs, CLAUDE.md, the worked example. Everything else is YOURS -- your parts, assemblies,
+docs, AGENTS.md, skills, the worked example. Everything else is YOURS -- your parts, assemblies,
 things/ (the real objects they fit), PROJECT.md, common/printer.py, parts/BACKLOG.md --
 and never leaves this repo. A file of
 your own inside a shared folder (say common/my_rail.py) goes in `.upstream-private`,
@@ -63,7 +63,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 FRAMEWORK = (
-    ".claude/", ".githooks/", ".vscode/", "common/", "docs/", "scripts/",
+    ".agents/", ".claude/", ".githooks/", ".vscode/", "common/", "docs/", "scripts/",
     "parts/templates/", "parts/shower_mount/", "assemblies/templates/",
     "AGENTS.md", "CLAUDE.md", "README.md", "setup.sh", "requirements.txt", "requirements-viewer.txt",
     ".python-version", ".gitignore", ".gitattributes", "exports/.gitkeep",

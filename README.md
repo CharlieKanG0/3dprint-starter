@@ -2,26 +2,29 @@
 
 **Design your own 3D-printable parts by describing them to an AI.** You say
 what you need ("a mount for my shower head on the roof rack, height
-adjustable, folds away"), share a few photos and measurements, and Claude
-designs it with you: it asks questions, draws options for you to pick from,
-builds a 3D model you can spin around, checks that it will fit and print, and
-hands you a file to send to your printer.
+adjustable, folds away"), share a few photos and measurements, and your
+coding agent designs it with you: it asks questions, draws options for you to
+pick from, builds a 3D model you can spin around, checks that it will fit and
+print, and hands you a file to send to your printer.
 
-No CAD software and no coding needed. You make the decisions; Claude does the
-drawing, the maths and the checking.
+No CAD software and no coding needed. You make the decisions; the agent does
+the drawing, the maths and the checking. Works with **Claude Code**,
+**Antigravity**, **Codex**, **Cursor**, or any `AGENTS.md`-compatible coding
+agent.
 
 <p align="center">
-  <img src="docs/images/shower_mount_sketch.png" width="49%" alt="Three lettered design options drawn by Claude for a lock">
+  <img src="docs/images/shower_mount_sketch.png" width="49%" alt="Three lettered design options drawn by the agent for a lock">
   <img src="docs/images/shower_mount_3d.png" width="49%" alt="The finished shower mount as a 3D model in the viewer">
 </p>
-<p align="center"><em>Left: Claude sketches options A, B and C for you to choose from.
+<p align="center"><em>Left: the agent sketches options A, B and C for you to choose from.
 Right: the finished design, a folding shower-head arm, in the 3D viewer.</em></p>
 
 ## What you need
 
 - **A Mac** (Linux works too).
-- **[Claude Code](https://claude.com/claude-code)** with a Claude account. We
-  recommend running it inside the **Orca** app, which shows Claude, your
+- **A coding agent** such as [Claude Code](https://claude.com/claude-code),
+  Antigravity (`agy`), [Codex](https://openai.com/codex), or Cursor. We
+  recommend running it inside the **Orca** app, which shows the agent, your
   sketches and the 3D model side by side. Plain Terminal and VS Code work too.
 - **A 3D printer** and its slicer (Bambu Studio, OrcaSlicer, PrusaSlicer...).
 - **Digital calipers** help a lot (about $20). Good measurements make parts that fit first time.
@@ -34,31 +37,31 @@ Open Terminal, paste this, and press Enter:
 git clone https://github.com/CharlieKanG0/3dprint-starter.git ~/3dprint && cd ~/3dprint && ./setup.sh
 ```
 
-Then open the `3dprint` folder in Claude Code and say hello. Claude will ask a
-few questions about your printer and what you like to make, and set itself up.
-**[Getting started](docs/getting-started.md)** walks through every step,
-including installing Claude Code and printing your first part.
+Then open the `3dprint` folder in your coding agent and say hello. The agent
+will ask a few questions about your printer and what you like to make, and set
+itself up. **[Getting started](docs/getting-started.md)** walks through every
+step, including setting up your agent and printing your first part.
 
 ## How designing works
 
 1. **You describe what you need.** Photos of where it goes, measurements if
    you have them, and anything that matters ("must fold flat", "PETG").
-2. **Claude asks questions** about anything it can't see or look up. If you
+2. **The agent asks questions** about anything it can't see or look up. If you
    send a product link, it reads the specs itself.
-3. **Claude sketches options**, labelled A, B, C, and recommends one. You
+3. **The agent sketches options**, labelled A, B, C, and recommends one. You
    reply with a letter, plus any changes ("B, but make the arm longer").
    Nothing gets modelled until you've picked.
-4. **Claude builds the 3D model.** It opens in a viewer you can spin and
+4. **The agent builds the 3D model.** It opens in a viewer you can spin and
    zoom. Behind the scenes it checks the part is solid, fits your printer's
    bed, and that moving pieces don't collide.
 5. **You print it,** starting with the small critical piece to test the fit.
-6. **Tell Claude how it fit** ("the clip is about 1 mm loose"). It adjusts
+6. **Tell the agent how it fit** ("the clip is about 1 mm loose"). It adjusts
    the design, and remembers the correction for your future parts.
 
 More on each step, with tips: **[Designing a part](docs/designing.md)**.
 
 **Already have a model you downloaded** (a `.3mf` from MakerWorld, say) and want
-to change it: lighter, faster to print, or with a hole or clamp added? Claude
+to change it: lighter, faster to print, or with a hole or clamp added? The agent
 checks the file, tells you where the plastic goes, and edits it the same
 sketch-first way: **[Changing a model you downloaded](docs/modifying.md)**.
 
@@ -66,7 +69,7 @@ sketch-first way: **[Changing a model you downloaded](docs/modifying.md)**.
 
 For each part, one or more **`.step` files**: the 3D shapes, already turned
 the right way up for printing. Drag them into your slicer, pick your material,
-and print. Claude's summary tells you which piece is which, what bolts or
+and print. The agent's summary tells you which piece is which, what bolts or
 inserts to buy, and what to print first.
 
 ## What's in this folder
@@ -74,21 +77,20 @@ inserts to buy, and what to print first.
 | Folder or file | What it is | Do you touch it? |
 | --- | --- | --- |
 | `parts/` | Your designs, one folder each, with sketches and print files | This is where your work lives |
-| `things/` | Measurements of the real things your parts attach to (a roof rack, a rail, a pipe), so Claude never asks twice | Claude fills it in, with your OK |
-| `PROJECT.md` | About you: your printer, favourite materials, what you make | Claude fills it in on day one |
+| `things/` | Measurements of the real things your parts attach to (a roof rack, a rail, a pipe), so the agent never asks twice | The agent fills it in, with your OK |
+| `PROJECT.md` | About you: your printer, favourite materials, what you make | The agent fills it in on day one |
 | `parts/BACKLOG.md` | Ideas for parts, and parts that are done | Yours to edit |
 | `parts/shower_mount/` | A finished example design | Look, or delete |
 | `docs/` | These guides | Read |
-| `common/`, `scripts/`, `CLAUDE.md`, ... | The toolbox: drawing, checking and viewing tools, and Claude's instructions | Leave as is |
+| `common/`, `scripts/`, `AGENTS.md`, `.agents/skills/`, ... | The toolbox: drawing, checking and viewing tools, and the agent's instructions (`CLAUDE.md` and `.claude/skills` symlink here) | Leave as is |
 
 ## Your designs stay yours
 
 Everything you design stays on your computer. Nothing is uploaded anywhere
-unless you choose to. For a safe copy, Claude can back everything up to a
+unless you choose to. For a safe copy, the agent can back everything up to a
 **private** GitHub repository that only you can see. The toolbox gets
 improvements over time; one command brings them in without touching your
-designs. See
-**[Updates and sharing](docs/sharing.md)**.
+designs. See **[Updates and sharing](docs/sharing.md)**.
 
 Not sure what a word means? **[Glossary](docs/glossary.md)**.
 
@@ -109,5 +111,5 @@ without an AI too:
 ./venv/bin/python scripts/things.py                  # what's measured, and what's still a guess
 ```
 
-`CLAUDE.md` is the full workflow that Claude follows, and `docs/viewer.md`
-covers the viewer and renders.
+`AGENTS.md` (symlinked as `CLAUDE.md`) is the full workflow that your coding
+agent follows, and `docs/viewer.md` covers the viewer and renders.

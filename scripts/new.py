@@ -7,7 +7,7 @@
 
 <name> is snake_case and must not already be used by a part or an assembly
 (scripts find either kind by name -- common/project.py). The part also gets a
-layout.py for the "sketch before you model" step (CLAUDE.md step 0) and a
+layout.py for the "sketch before you model" step (AGENTS.md step 0) and a
 Backlog line in parts/BACKLOG.md.
 """
 
